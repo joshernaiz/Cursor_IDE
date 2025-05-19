@@ -1,0 +1,86 @@
+{
+  "version": "1.0",
+  "project": {
+    "id": "taskflow",
+    "description": "Aplicación de gestión de tareas con IA"
+  },
+  "servers": [
+    {
+      "id": "ai-service",
+      "url": "https://mcp.example.com/ai",
+      "auth": {
+        "type": "token",
+        "envVar": "MCP_AI_TOKEN"
+      },
+      "resources": [
+        {
+          "name": "task-analyzer",
+          "path": "/models/task-analyzer",
+          "description": "Modelo para análisis y sugerencias de tareas",
+          "settings": {
+            "maxInputTasks": 100,
+            "contextLength": 10000,
+            "responseFormat": "json"
+          }
+        },
+        {
+          "name": "workload-optimizer",
+          "path": "/models/workload-optimizer",
+          "description": "Modelo para optimizar distribución de tareas",
+          "settings": {
+            "timeWindow": "7d",
+            "maxTasks": 200,
+            "optimizationTarget": "balanced"
+          }
+        },
+        {
+          "name": "task-categorizer",
+          "path": "/models/task-categorizer",
+          "description": "Modelo para categorización automática de tareas",
+          "settings": {
+            "customCategories": true,
+            "confidenceThreshold": 0.7,
+            "batchSize": 50
+          }
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "cacheEnabled": true,
+    "cacheTTL": 3600,
+    "requestTimeout": 5000,
+    "maxRetries": 2,
+    "logLevel": "info",
+    "fallbackMode": "local",
+    "batchProcessing": true
+  },
+  "models": [
+    {
+      "id": "task-analyzer",
+      "provider": "anthropic",
+      "description": "Modelo especializado en análisis de tareas",
+      "contextLength": 100000,
+      "endpoint": "/models/task-analyzer",
+      "examples": [
+        {
+          "input": "Lista de tareas con tiempos y prioridades...",
+          "output": "Análisis de dependencias y sugerencias..."
+        }
+      ]
+    },
+    {
+      "id": "workload-optimizer",
+      "provider": "openai",
+      "description": "Modelo para distribución óptima de carga de trabajo",
+      "contextLength": 16000,
+      "endpoint": "/models/workload-optimizer",
+      "examples": [
+        {
+          "input": "Calendario y lista de tareas pendientes...",
+          "output": "Plan optimizado con distribución por días..."
+        }
+      ]
+    }
+  ]
+}

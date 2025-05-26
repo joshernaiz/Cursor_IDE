@@ -1,0 +1,450 @@
+---
+description: Reglas para integración de servicios de IA y configuración MCP en TaskFlow
+globs: ['**/ai/**/*', '**/*ai*', '**/mcp/**/*', '**/.mcp/**/*']
+alwaysApply: false
+---
+
+# Reglas para Servicios de IA - TaskFlow
+
+## Principios de Integración de IA
+
+### Diseño Defensivo
+- **Fallbacks**: Siempre proporcionar alternativas cuando IA no está disponible
+- **Timeouts**: Establecer timeouts apropiados para evitar bloqueos
+- **Graceful Degradation**: La aplicación debe funcionar sin IA
+- **Error Handling**: Manejar errores de IA de forma transparente para el usuario
+
+### Separación de Responsabilidades
+- **Servicios IA**: Aislados en módulos dedicados
+- **Lógica de Negocio**: Independiente de la disponibilidad de IA
+- **UI/UX**: Indicadores claros de procesamiento y estados de IA
+
+## Estructura de Servicios de IA
+
+### Servicio Base de IA
+```typescript
+// AI-Hint Architecture: [IA Service Layer] [Abstracción para servicios de IA] [Manejo unificado de errores, timeouts y fallbacks]
+
+import { MCPClient } from '../mcp/mcp-client';
+import { logger } from '../utils/logger';
+
+export abstract class BaseAIService {
+  protected mcpClient: MCPClient;
+  protected timeout: number = 5000;
+  protected maxRetries: number = 2;
+
+  constructor(mcpClient: MCPClient) {
+    this.mcpClient = mcpClient;
+  }
+
+  // AI-Hint Flow: [Ejecutar con fallback] [Intenta IA → Maneja errores → Ejecuta fallback] [Log de métricas y errores]
+  protected async executeWithFallback<T>(
+    aiOperation: () => Promise<T>,
+    fallbackOperation: () => Promise<T>,
+    operationName: string
+  ): Promise<T> {
+    const startTime = Date.now();
+    
+    try {
+      logger.info(`Executing AI operation: ${operationName}`);
+      
+      const result = await Promise.race([
+        aiOperation(),
+        this.createTimeoutPromise()
+      ]);
+      
+      const duration = Date.now() - startTime;
+      logger.info(`AI operation completed: ${operationName}`, { duration });
+      
+      return result;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      logger.warn(`AI operation failed, using fallback: ${operationName}`, { 
+        error: error.message, 
+        duration 
+      });
+      
+      return await fallbackOperation();
+    }
+  }
+
+  private createTimeoutPromise(): Promise<never> {
+    return new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('AI operation timeout')), this.timeout);
+    });
+  }
+}
+```
+
+### Servicio de Análisis de Tareas
+```typescript
+// AI-Hint Component: [TaskAnalyzerService] [Analiza tareas usando IA para sugerencias] [Clasifica prioridad, estima tiempo, detecta dependencias]
+
+import { BaseAIService } from './base-ai-service';
+import { Task } from '../models/task-model';
+
+export interface TaskAnalysis {
+  suggestedPriority: 'low' | 'medium' | 'high';
+  estimatedDuration: number; // en minutos
+  suggestedTags: string[];
+  dependencies: string[];
+  complexity: 'simple' | 'moderate' | 'complex';
+  confidence: number; // 0-1
+}
+
+export class TaskAnalyzerService extends BaseAIService {
+  // AI-Hint Business: [Analizar tarea] [Envía contexto a IA → Procesa respuesta → Valida resultados] [Fallback a análisis básico por keywords]
+  async analyzeTask(task: Partial<Task>): Promise<TaskAnalysis> {
+    return this.executeWithFallback(
+      () => this.performAIAnalysis(task),
+      () => this.performBasicAnalysis(task),
+      'task-analysis'
+    );
+  }
+
+  private async performAIAnalysis(task: Partial<Task>): Promise<TaskAnalysis> {
+    const prompt = this.buildAnalysisPrompt(task);
+    
+    const response = await this.mcpClient.analyze({
+      model: 'task-analyzer',
+      prompt,
+      maxTokens: 500,
+      temperature: 0.3
+    });
+
+    return this.parseAIResponse(response);
+  }
+
+  // AI-Hint Business: [Análisis básico] [Análisis sin IA basado en keywords y heurísticas] [Backup cuando IA no disponible]
+  private async performBasicAnalysis(task: Partial<Task>): Promise<TaskAnalysis> {
+    const title = task.title?.toLowerCase() || '';
+    const description = task.description?.toLowerCase() || '';
+    const text = `${title} ${description}`;
+
+    // Detección de prioridad por keywords
+    const highPriorityKeywords = ['urgente', 'crítico', 'inmediato', 'asap'];
+    const lowPriorityKeywords = ['futuro', 'opcional', 'mejora', 'nice-to-have'];
+    
+    let suggestedPriority: 'low' | 'medium' | 'high' = 'medium';
+    
+    if (highPriorityKeywords.some(keyword => text.includes(keyword))) {
+      suggestedPriority = 'high';
+    } else if (lowPriorityKeywords.some(keyword => text.includes(keyword))) {
+      suggestedPriority = 'low';
+    }
+
+    // Estimación básica de duración
+    const wordCount = text.split(' ').length;
+    const estimatedDuration = Math.max(30, Math.min(480, wordCount * 5));
+
+    return {
+      suggestedPriority,
+      estimatedDuration,
+      suggestedTags: this.extractBasicTags(text),
+      dependencies: [],
+      complexity: wordCount > 50 ? 'complex' : wordCount > 20 ? 'moderate' : 'simple',
+      confidence: 0.6 // Menor confianza para análisis básico
+    };
+  }
+
+  private buildAnalysisPrompt(task: Partial<Task>): string {
+    return `
+Analiza la siguiente tarea y proporciona sugerencias:
+
+Título: ${task.title}
+Descripción: ${task.description}
+
+Proporciona en formato JSON:
+- suggestedPriority: low/medium/high
+- estimatedDuration: minutos estimados
+- suggestedTags: array de tags relevantes
+- dependencies: posibles dependencias detectadas
+- complexity: simple/moderate/complex
+- confidence: nivel de confianza 0-1
+    `.trim();
+  }
+
+  private parseAIResponse(response: string): TaskAnalysis {
+    try {
+      const parsed = JSON.parse(response);
+      
+      // Validación y sanitización
+      return {
+        suggestedPriority: ['low', 'medium', 'high'].includes(parsed.suggestedPriority) 
+          ? parsed.suggestedPriority : 'medium',
+        estimatedDuration: Math.max(15, Math.min(480, parsed.estimatedDuration || 60)),
+        suggestedTags: Array.isArray(parsed.suggestedTags) 
+          ? parsed.suggestedTags.slice(0, 5) : [],
+        dependencies: Array.isArray(parsed.dependencies) 
+          ? parsed.dependencies.slice(0, 10) : [],
+        complexity: ['simple', 'moderate', 'complex'].includes(parsed.complexity)
+          ? parsed.complexity : 'moderate',
+        confidence: Math.max(0, Math.min(1, parsed.confidence || 0.5))
+      };
+    } catch (error) {
+      logger.error('Failed to parse AI response', { response, error });
+      throw new Error('Invalid AI response format');
+    }
+  }
+
+  private extractBasicTags(text: string): string[] {
+    const commonTags = [
+      { keywords: ['frontend', 'ui', 'interfaz'], tag: 'frontend' },
+      { keywords: ['backend', 'api', 'servidor'], tag: 'backend' },
+      { keywords: ['bug', 'error', 'fallo'], tag: 'bug' },
+      { keywords: ['feature', 'funcionalidad', 'nueva'], tag: 'feature' },
+      { keywords: ['test', 'prueba'], tag: 'testing' },
+      { keywords: ['doc', 'documentación'], tag: 'documentation' }
+    ];
+
+    return commonTags
+      .filter(({ keywords }) => keywords.some(keyword => text.includes(keyword)))
+      .map(({ tag }) => tag)
+      .slice(0, 3);
+  }
+}
+```
+
+## Configuración MCP
+
+### Cliente MCP
+```typescript
+// AI-Hint Component: [MCP Client] [Cliente para comunicación con servidores MCP] [Maneja autenticación, reintentos y conexiones]
+
+import axios, { AxiosInstance } from 'axios';
+import { MCPConfig } from './mcp-config';
+
+export interface MCPRequest {
+  model: string;
+  prompt: string;
+  maxTokens?: number;
+  temperature?: number;
+  metadata?: Record<string, any>;
+}
+
+export interface MCPResponse {
+  result: string;
+  tokens: number;
+  model: string;
+  processingTime: number;
+}
+
+export class MCPClient {
+  private client: AxiosInstance;
+  private config: MCPConfig;
+
+  constructor(config: MCPConfig) {
+    this.config = config;
+    this.client = axios.create({
+      baseURL: config.baseUrl,
+      timeout: config.timeout || 10000,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${config.apiKey}`
+      }
+    });
+
+    this.setupInterceptors();
+  }
+
+  // AI-Hint Flow: [Análisis MCP] [Prepara request → Envía a servidor → Procesa respuesta] [Maneja rate limits y errores de red]
+  async analyze(request: MCPRequest): Promise<string> {
+    try {
+      const response = await this.client.post('/analyze', {
+        ...request,
+        projectId: this.config.projectId,
+        timestamp: new Date().toISOString()
+      });
+
+      if (!response.data?.result) {
+        throw new Error('Invalid MCP response format');
+      }
+
+      return response.data.result;
+    } catch (error) {
+      logger.error('MCP request failed', { 
+        error: error.message, 
+        model: request.model 
+      });
+      throw error;
+    }
+  }
+
+  private setupInterceptors() {
+    // Request interceptor para logging
+    this.client.interceptors.request.use(
+      (config) => {
+        logger.debug('MCP request', { 
+          url: config.url, 
+          method: config.method 
+        });
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // Response interceptor para manejo de errores
+    this.client.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 429) {
+          logger.warn('MCP rate limit exceeded');
+          throw new Error('Rate limit exceeded, please try again later');
+        }
+        
+        if (error.response?.status >= 500) {
+          logger.error('MCP server error', { status: error.response.status });
+          throw new Error('MCP service temporarily unavailable');
+        }
+        
+        return Promise.reject(error);
+      }
+    );
+  }
+}
+```
+
+### Configuración de MCP
+```typescript
+// AI-Hint Data: [MCP Config] [Configuración para servicios MCP] [Carga settings desde env y archivos config]
+
+export interface MCPConfig {
+  baseUrl: string;
+  apiKey: string;
+  projectId: string;
+  timeout: number;
+  maxRetries: number;
+  models: {
+    taskAnalyzer: string;
+    workloadOptimizer: string;
+    categoryClassifier: string;
+  };
+}
+
+export class MCPConfigLoader {
+  static loadConfig(): MCPConfig {
+    const config = {
+      baseUrl: process.env.MCP_BASE_URL || 'https://mcp.example.com',
+      apiKey: process.env.MCP_API_KEY || '',
+      projectId: process.env.MCP_PROJECT_ID || 'taskflow',
+      timeout: parseInt(process.env.MCP_TIMEOUT || '10000'),
+      maxRetries: parseInt(process.env.MCP_MAX_RETRIES || '2'),
+      models: {
+        taskAnalyzer: 'task-analyzer',
+        workloadOptimizer: 'workload-optimizer',
+        categoryClassifier: 'task-categorizer'
+      }
+    };
+
+    // Validación de configuración
+    if (!config.apiKey) {
+      logger.warn('MCP API key not configured, AI features will be disabled');
+    }
+
+    return config;
+  }
+}
+```
+
+## Patrones de UI para IA
+
+### Estados de IA en el Frontend
+```typescript
+// AI-Hint Component: [AI Status Hook] [Hook para manejar estados de IA en React] [Loading, success, error, fallback]
+
+import { useState, useCallback } from 'react';
+
+export interface AIState<T> {
+  data: T | null;
+  isLoading: boolean;
+  error: string | null;
+  isAIEnabled: boolean;
+  confidence: number;
+  isFallback: boolean;
+}
+
+export function useAIOperation<T>() {
+  const [state, setState] = useState<AIState<T>>({
+    data: null,
+    isLoading: false,
+    error: null,
+    isAIEnabled: true,
+    confidence: 0,
+    isFallback: false
+  });
+
+  const execute = useCallback(async (operation: () => Promise<{
+    data: T;
+    confidence: number;
+    isFallback: boolean;
+  }>) => {
+    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    
+    try {
+      const result = await operation();
+      setState({
+        data: result.data,
+        isLoading: false,
+        error: null,
+        isAIEnabled: true,
+        confidence: result.confidence,
+        isFallback: result.isFallback
+      });
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        isLoading: false,
+        error: error.message,
+        isAIEnabled: false
+      }));
+    }
+  }, []);
+
+  return { state, execute };
+}
+```
+
+## Testing de Servicios de IA
+
+### Mock de MCP
+```typescript
+// AI-Hint Testing: [MCP Mock] [Mock para testing de servicios IA] [Simula respuestas, errores y timeouts]
+
+export class MockMCPClient extends MCPClient {
+  private mockResponses: Map<string, string> = new Map();
+  private shouldFail: boolean = false;
+  private delayMs: number = 0;
+
+  setMockResponse(model: string, response: string) {
+    this.mockResponses.set(model, response);
+  }
+
+  setShouldFail(fail: boolean) {
+    this.shouldFail = fail;
+  }
+
+  setDelay(ms: number) {
+    this.delayMs = ms;
+  }
+
+  async analyze(request: MCPRequest): Promise<string> {
+    if (this.delayMs > 0) {
+      await new Promise(resolve => setTimeout(resolve, this.delayMs));
+    }
+
+    if (this.shouldFail) {
+      throw new Error('Mocked MCP failure');
+    }
+
+    const mockResponse = this.mockResponses.get(request.model);
+    if (!mockResponse) {
+      throw new Error(`No mock response configured for model: ${request.model}`);
+    }
+
+    return mockResponse;
+  }
+}
+```
+
+@mcp-client-config.ts
+@ai-service-patterns.ts

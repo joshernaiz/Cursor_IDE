@@ -1,0 +1,94 @@
+---
+description: Reglas principales para el proyecto TaskFlow - Gestión de tareas con IA
+globs: 
+alwaysApply: false
+---
+# TaskFlow - Reglas Principales del Proyecto
+
+## Contexto del Proyecto
+TaskFlow es una aplicación de gestión de tareas con capacidades de IA diseñada para demostrar las mejores prácticas de desarrollo con Cursor IDE.
+
+## Principios Fundamentales
+
+1. **Arquitectura**: Seguir Clean Architecture con separación clara entre capas
+2. **TypeScript**: Usar TypeScript en todo el proyecto para type safety
+3. **Componentes**: Crear componentes reutilizables y modulares
+4. **Performance**: Optimizar para rendimiento sin sacrificar legibilidad
+5. **Testing**: Mantener cobertura de pruebas alta (>80%)
+
+## Convenciones de Código
+
+### Nomenclatura
+- **Archivos**: kebab-case para archivos (`task-service.ts`)
+- **Componentes React**: PascalCase (`TaskCard.tsx`)
+- **Funciones y variables**: camelCase (`getUserTasks`)
+- **Constantes**: UPPER_SNAKE_CASE (`MAX_TASKS_PER_USER`)
+- **Interfaces**: PascalCase con prefijo I (`ITaskService`)
+- **Types**: PascalCase con sufijo Type (`TaskStatusType`)
+
+### Estructura de Archivos
+- Un componente por archivo
+- Exportaciones con nombre preferidas sobre default
+- Índices de barril para facilitar importaciones
+- Separar lógica de negocio de presentación
+
+## Directrices de IA
+
+### AI-Hints Obligatorios
+- Cada archivo principal debe tener AI-Hint de arquitectura o componente
+- Funciones complejas deben incluir AI-Hint de flujo o lógica de negocio
+- Modelos de datos requieren AI-Hint de datos
+- Funciones de seguridad requieren AI-Hint de seguridad
+
+### Documentación para IA
+- Comentarios explicativos en puntos críticos
+- Justificación de decisiones arquitectónicas importantes
+- Referencias a patrones de diseño utilizados
+
+## Tecnologías y Librerías
+
+### Frontend
+- React 18+ con hooks
+- TypeScript 5+
+- Tailwind CSS para estilos
+- Framer Motion para animaciones
+- React Hook Form para formularios
+- React Query/TanStack Query para estado del servidor
+
+### Backend
+- Node.js con Express
+- TypeScript
+- MongoDB con Mongoose
+- JWT para autenticación
+- Zod para validación de esquemas
+- Winston para logging
+
+### Testing
+- Jest para pruebas unitarias
+- React Testing Library para componentes
+- Supertest para API testing
+- MSW para mocking de API
+
+## Estructura de Respuestas
+Cuando generes código:
+1. Incluye imports necesarios
+2. Añade AI-Hints apropiados
+3. Implementa manejo de errores
+4. Incluye tipos TypeScript
+5. Añade comentarios explicativos
+6. Considera edge cases comunes
+
+## Patrones Específicos de TaskFlow
+
+### Tareas (Tasks)
+- Estado centralizado para gestión de tareas
+- Optimistic updates en la UI
+- Sincronización offline-first cuando sea posible
+
+### IA Features
+- Servicios de IA separados de la lógica de negocio
+- Fallbacks graceful cuando IA no está disponible
+- Configuración MCP para servicios externos
+
+@task-model.ts
+@api-patterns.ts

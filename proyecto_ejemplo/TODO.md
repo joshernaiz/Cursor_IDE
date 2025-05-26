@@ -4,11 +4,21 @@ Esta lista de tareas detalla los pasos concretos para implementar el proyecto Ta
 
 ## 1. Configuración inicial
 
-### 1.1 Estructura del proyecto
-- [ ] Crear la estructura de directorios principal (raíz, frontend, backend, docs)
-- [ ] Inicializar repositorio Git
-- [ ] Crear .gitignore para archivos temporales, dependencias y configuraciones locales
-- [ ] Crear README.md inicial con instrucciones básicas
+### 1.1 Estructura del proyecto ✅ COMPLETADA
+- [x] Crear la estructura de directorios principal (raíz, frontend, backend, docs)
+  - [x] 1.1.1 - Verificar estado actual y crear estructura faltante
+  - [x] 1.1.2 - Crear estructura completa de carpetas según el plan
+  - [x] 1.1.3 - Crear archivo .gitignore apropiado
+  - [x] 1.1.4 - Actualizar README.md con información completa
+  - [x] 1.1.5 - Crear archivos index.md en docs/ para documentación estructurada
+  - [x] 1.1.6 - Verificar integridad de la estructura final
+  - [x] 1.1.7 - Crear script de prueba para validar la estructura
+  - [x] 1.1.8 - Documentar cambios realizados
+- [x] Inicializar repositorio Git (ya existía)
+- [x] Crear .gitignore para archivos temporales, dependencias y configuraciones locales
+- [x] Crear README.md inicial con instrucciones básicas
+
+**Comando de prueba**: `./scripts/1.1_structure_test.sh`
 
 ### 1.2 Configuración frontend
 - [ ] Inicializar proyecto React con Vite y TypeScript
@@ -27,7 +37,7 @@ Esta lista de tareas detalla los pasos concretos para implementar el proyecto Ta
 - [ ] Configurar conexión a MongoDB
 
 ### 1.4 Configuración de Cursor IDE
-- [ ] Crear archivo `.cursor.json` inicial con metadatos del proyecto
+- [ ] Crear archivo `.cursor.json` inicial con metadatos del proyecto (omitir si ya existe)
 - [ ] Definir puntos de entrada principales y estructura
 - [ ] Configurar convenciones de código y AI-Hints
 - [ ] Configurar patrones de inclusión/exclusión de archivos

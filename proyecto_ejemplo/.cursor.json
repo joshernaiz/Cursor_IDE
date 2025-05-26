@@ -1,10 +1,7 @@
 {
   "project": {
     "name": "TaskFlow",
-    "description": "Aplicación de gestión de tareas con capacidades de IA",
-    "version": "0.1.0",
-    "homepage": "https://taskflow.example.com",
-    "repository": "https://github.com/example/taskflow"
+    "version": "0.1.0"
   },
   "context": {
     "entryPoints": [
@@ -17,49 +14,6 @@
       "backend/src/api",
       "backend/src/services",
       "backend/src/ai"
-    ],
-    "documentation": [
-      "docs/index.md",
-      "docs/architecture/ARCHITECTURE.md",
-      "docs/api/API.md"
-    ]
-  },
-  "aiHints": {
-    "architecture": {
-      "frontend": "React SPA with Redux Toolkit and RTK Query",
-      "backend": "Express API with MongoDB and Mongoose",
-      "communication": "REST API with JWT authentication"
-    },
-    "patterns": [
-      "Feature-based organization for frontend code",
-      "Clean Architecture for backend",
-      "SOLID principles throughout the codebase"
-    ],
-    "terminology": {
-      "Task": "Unit of work with title, description, status, priority, and due date",
-      "Project": "Collection of related tasks with team members",
-      "AI Widget": "Component that provides AI-driven suggestions and analysis"
-    },
-    "conventions": {
-      "formatting": "Prettier with 2-space indentation",
-      "naming": "camelCase for variables and functions, PascalCase for components and classes",
-      "files": "kebab-case.ts for utilities, PascalCase.tsx for components"
-    }
-  },
-  "mcpConfig": {
-    "enabled": true,
-    "serverUrl": "https://mcp.example.com/api",
-    "resources": [
-      {
-        "name": "task-analyzer",
-        "path": "/models/task-analyzer",
-        "description": "Model for analyzing tasks and providing suggestions"
-      },
-      {
-        "name": "workload-optimizer",
-        "path": "/models/workload-optimizer",
-        "description": "Model for optimizing task distribution across time"
-      }
     ]
   },
   "files": {
@@ -73,25 +27,5 @@
       "**/build/**",
       "**/.DS_Store"
     ]
-  },
-  "rules": [
-    {
-      "name": "frontend-components",
-      "description": "Rules for frontend components",
-      "paths": ["frontend/src/components/**"],
-      "aiHints": "Component functionality, state management, props interface"
-    },
-    {
-      "name": "backend-controllers",
-      "description": "Rules for backend controllers",
-      "paths": ["backend/src/api/controllers/**"],
-      "aiHints": "Request validation, error handling, service interactions"
-    },
-    {
-      "name": "ai-services",
-      "description": "Rules for AI services",
-      "paths": ["backend/src/ai/**"],
-      "aiHints": "Algorithm explanation, data requirements, failure modes"
-    }
-  ]
+  }
 }

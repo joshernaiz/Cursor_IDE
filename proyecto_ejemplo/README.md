@@ -1,19 +1,29 @@
 # TaskFlow - Gestión de Tareas con IA
 
-Este es un proyecto de ejemplo para el curso "Desarrollo Eficiente con Cursor IDE". TaskFlow es una aplicación web de gestión de tareas que incluye capacidades de IA para priorización, categorización y sugerencias.
+TaskFlow es una aplicación web moderna de gestión de tareas que integra capacidades de IA para mejorar la productividad. Diseñada para usuarios individuales y equipos, ofrece una experiencia intuitiva con funciones inteligentes de priorización, categorización y sugerencias.
 
 ## Descripción del Proyecto
 
-TaskFlow es una aplicación moderna de gestión de tareas con las siguientes características:
+TaskFlow es una aplicación completa de gestión de tareas con las siguientes características:
 
-- Interfaz de usuario intuitiva y responsive
-- Backend API RESTful
-- Capacidades de IA para análisis y optimización de tareas
-- Sincronización en tiempo real
-- Organización por proyectos, etiquetas y prioridades
-- Notificaciones y recordatorios
+### Funcionalidades Principales
+- ✅ **Gestión de Tareas**: CRUD completo con estados, prioridades y fechas límite
+- 📊 **Gestión de Proyectos**: Organización por proyectos con miembros y permisos
+- 🤖 **IA Integrada**: Análisis automático, priorización y sugerencias inteligentes
+- 🎨 **Interfaz Moderna**: UI responsive con tema claro/oscuro
+- 🔒 **Autenticación Segura**: Sistema completo con JWT y refresh tokens
+- 🔍 **Búsqueda y Filtros**: Sistema avanzado de filtrado y búsqueda
+- 📱 **Responsive Design**: Optimizado para desktop, tablet y móvil
+- 🚀 **Performance**: Optimizaciones de carga y caching inteligente
 
-Este proyecto está diseñado específicamente para demostrar las mejores prácticas de desarrollo con Cursor IDE, incluyendo el uso de AI-Hints, Cursor Rules y configuración MCP.
+### Capacidades de IA
+- **Priorización Automática**: Análisis de urgencia e importancia
+- **Categorización Inteligente**: Clasificación automática de tareas
+- **Planificación Semanal**: Distribución óptima de carga de trabajo
+- **Detección de Conflictos**: Identificación de sobrecargas y dependencias
+- **Sugerencias Contextuales**: Recomendaciones basadas en patrones de uso
+
+Este proyecto demuestra las mejores prácticas de desarrollo con arquitectura limpia, principios SOLID y desarrollo dirigido por IA.
 
 ## Objetivos del Proyecto Ejemplo
 
@@ -33,25 +43,54 @@ Este proyecto está diseñado específicamente para demostrar las mejores práct
 
 ## Estructura del Proyecto
 
-El proyecto sigue una arquitectura de microservicios ligera con las siguientes partes:
+El proyecto sigue una arquitectura limpia con separación clara de responsabilidades:
 
 ```
 taskflow/
-├── .cursor.json           # Configuración de Cursor IDE
-├── .mcp/                  # Configuración de MCP Servers
-├── docs/                  # Documentación completa
-├── frontend/              # Aplicación React
-├── backend/               # API y servicios
+├── .cursor.json              # Configuración de Cursor IDE
+├── .mcp/                     # Configuración de MCP Servers
+├── docs/                     # Documentación completa
+│   ├── plan/                 # Planes de diseño e implementación
+│   ├── api/                  # Documentación de API
+│   ├── architecture/         # Diagramas y arquitectura
+│   ├── guides/               # Guías de desarrollo
+│   └── info/                 # Información del proyecto
+├── frontend/                 # Aplicación React SPA
 │   ├── src/
-│   │   ├── api/           # Controladores y rutas
-│   │   ├── models/        # Modelos de datos
-│   │   ├── services/      # Lógica de negocio
-│   │   ├── utils/         # Utilidades
-│   │   └── ai/            # Servicios de IA
-│   ├── tests/             # Pruebas
-│   └── package.json
-├── docker-compose.yml     # Configuración Docker
-└── README.md              # Este archivo
+│   │   ├── components/       # Componentes React
+│   │   │   ├── common/       # Componentes reutilizables
+│   │   │   ├── layout/       # Componentes de layout
+│   │   │   ├── tasks/        # Componentes de tareas
+│   │   │   ├── projects/     # Componentes de proyectos
+│   │   │   ├── auth/         # Componentes de autenticación
+│   │   │   └── ai/           # Componentes de IA
+│   │   ├── hooks/            # Hooks personalizados
+│   │   ├── pages/            # Páginas principales
+│   │   ├── services/         # Servicios de API
+│   │   ├── store/            # Estado global (Redux)
+│   │   ├── types/            # Tipos TypeScript
+│   │   └── utils/            # Utilidades
+│   ├── public/               # Archivos estáticos
+│   └── tests/                # Pruebas frontend
+├── backend/                  # API RESTful
+│   ├── src/
+│   │   ├── api/              # Capa de API
+│   │   │   ├── routes/       # Definición de rutas
+│   │   │   ├── controllers/  # Controladores
+│   │   │   ├── middleware/   # Middleware personalizado
+│   │   │   └── validators/   # Validaciones Zod
+│   │   ├── config/           # Configuración de la app
+│   │   ├── db/               # Base de datos
+│   │   │   └── models/       # Modelos Mongoose
+│   │   ├── services/         # Lógica de negocio
+│   │   ├── ai/               # Servicios de IA
+│   │   ├── types/            # Tipos TypeScript
+│   │   └── utils/            # Utilidades
+│   └── tests/                # Pruebas backend
+├── scripts/                  # Scripts de prueba y utilidades
+├── docker-compose.yml        # Configuración Docker
+├── .gitignore               # Exclusiones de Git
+└── README.md                # Este archivo
 ```
 
 ## Fases de Desarrollo
@@ -83,12 +122,65 @@ El desarrollo del proyecto se dividirá en las siguientes fases:
    - Pruebas de integración
    - Optimización
 
-## Cómo Usar Este Proyecto
+## Inicio Rápido
 
-1. Clona el repositorio
-2. Sigue el desarrollo paso a paso según la guía del curso
-3. Utiliza los prompts optimizados para cada fase
-4. Experimenta con extensiones y mejoras
+### Prerrequisitos
+- Node.js 18+ 
+- npm o yarn
+- MongoDB (local o MongoDB Atlas)
+- Git
+
+### Instalación y Configuración
+
+1. **Clonar el repositorio**
+   ```bash
+   git clone <repository-url>
+   cd taskflow
+   ```
+
+2. **Configurar Backend**
+   ```bash
+   cd backend
+   npm install
+   cp .env.example .env  # Configurar variables de entorno
+   npm run dev           # Servidor en http://localhost:3001
+   ```
+
+3. **Configurar Frontend**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev           # Cliente en http://localhost:5173
+   ```
+
+4. **Con Docker (Opcional)**
+   ```bash
+   docker-compose up -d  # Levanta toda la aplicación
+   ```
+
+### Scripts Disponibles
+
+- `npm run dev` - Modo desarrollo
+- `npm run build` - Construir para producción
+- `npm run test` - Ejecutar pruebas
+- `npm run lint` - Verificar código
+- `npm run format` - Formatear código
+
+### Configuración de Variables de Entorno
+
+**Backend (.env)**
+```env
+NODE_ENV=development
+PORT=3001
+MONGODB_URI=mongodb://localhost:27017/taskflow
+JWT_SECRET=your-secret-key
+JWT_REFRESH_SECRET=your-refresh-secret
+```
+
+**Frontend (.env)**
+```env
+VITE_API_URL=http://localhost:3001/api
+```
 
 ## Contribuciones
 

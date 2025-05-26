@@ -1,0 +1,108 @@
+---
+description: Reglas para desarrollo de componentes React en TaskFlow
+globs: ['frontend/**/*.tsx', 'frontend/**/*.ts', '**/components/**/*']
+alwaysApply: false
+---
+
+# Reglas para Componentes React - TaskFlow
+
+## Estructura Estándar de Componentes
+
+Cada componente React debe seguir esta estructura:
+
+```typescript
+// AI-Hint Component: [ComponentName] [Descripción clara del propósito] [Responsabilidades principales]
+
+import React from 'react';
+
+interface ComponentNameProps {
+  // Props bien tipadas
+}
+
+export const ComponentName: React.FC<ComponentNameProps> = ({ 
+  ...props 
+}) => {
+  // Hooks primero
+  // Estados locales
+  // Efectos
+  // Handlers
+  // Renderizado
+  
+  return (
+    <div className="tailwind-classes">
+      {/* JSX */}
+    </div>
+  );
+};
+```
+
+## Convenciones de Props
+
+1. **Tipado estricto**: Todas las props deben estar tipadas
+2. **Destructuring**: Usar destructuring en los parámetros de la función
+3. **Props opcionales**: Marcar claramente con `?` y proporcionar defaults
+4. **Children**: Usar `React.ReactNode` para children
+
+```typescript
+interface TaskCardProps {
+  task: Task;
+  onEdit?: (task: Task) => void;
+  onDelete?: (taskId: string) => void;
+  className?: string;
+  children?: React.ReactNode;
+}
+```
+
+## Hooks y Estado
+
+### Orden de Hooks
+1. useState
+2. useEffect
+3. useContext
+4. Hooks personalizados
+5. useCallback/useMemo
+
+### Gestión de Estado
+- **Estado local**: Para UI state simple (loading, modales, etc.)
+- **useState**: Para estado simple del componente
+- **useReducer**: Para estado complejo con múltiples actualizaciones
+- **Context**: Solo para estado realmente global
+- **React Query**: Para estado del servidor
+
+## Estilos con Tailwind CSS
+
+### Convenciones de Clases
+- **Responsive first**: Empezar con mobile y agregar breakpoints
+- **Component variants**: Usar clases dinámicas para variantes
+- **Consistency**: Mantener espaciado y colores consistentes
+
+## Testing de Componentes
+
+### Estructura de Tests
+```typescript
+// AI-Hint Testing: [TaskCard Component] [Pruebas de renderizado, interacciones y estados] [Mock de props y eventos]
+
+import { render, screen, fireEvent } from '@testing-library/react';
+import { TaskCard } from './TaskCard';
+import { mockTask } from '../__mocks__/task';
+
+describe('TaskCard', () => {
+  const defaultProps = {
+    task: mockTask,
+    onEdit: jest.fn(),
+    onDelete: jest.fn()
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should render task information correctly', () => {
+    render(<TaskCard {...defaultProps} />);
+    expect(screen.getByText('Test Task')).toBeInTheDocument();
+  });
+});
+```
+
+@task-card-template.tsx
+@form-patterns.tsx

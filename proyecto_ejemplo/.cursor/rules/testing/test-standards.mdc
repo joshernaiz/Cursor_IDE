@@ -1,0 +1,88 @@
+---
+description: Estándares y patrones para testing en TaskFlow
+globs: 
+alwaysApply: false
+---
+
+# Estándares de Testing - TaskFlow
+
+## Principios de Testing
+
+### Pirámide de Tests
+1. **Unit Tests (70%)**: Tests rápidos, aislados, focalizados
+2. **Integration Tests (20%)**: Tests de componentes trabajando juntos
+3. **E2E Tests (10%)**: Tests de flujos completos de usuario
+
+### Naming Convention
+- **Describe blocks**: Nombre del componente/función being tested
+- **Test cases**: "should [expected behavior] when [condition]"
+- **Setup**: Usar `beforeEach`, `beforeAll` apropiadamente
+
+## Estructura Estándar de Tests
+
+### Unit Tests para Funciones
+```typescript
+// AI-Hint Testing: [Unit Test] [Test de función pura] [Casos happy path, edge cases, errores]
+
+import { calculateTaskPriority } from '../utils/task-utils';
+import { Task } from '../types/task';
+
+describe('calculateTaskPriority', () => {
+  it('should return high priority for urgent tasks', () => {
+    const task: Partial<Task> = {
+      title: 'Urgent bug fix',
+      dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      isUrgent: true
+    };
+
+    const result = calculateTaskPriority(task);
+    expect(result).toBe('high');
+  });
+});
+```
+
+### Component Tests (React)
+```typescript
+// AI-Hint Testing: [Component Test] [Test de componente React] [Renderizado, props, interacciones, estados]
+
+import { render, screen, fireEvent } from '@testing-library/react';
+import { TaskCard } from '../components/TaskCard';
+
+describe('TaskCard', () => {
+  const defaultProps = {
+    task: mockTask,
+    onEdit: jest.fn(),
+    onDelete: jest.fn()
+  };
+
+  it('should render task information correctly', () => {
+    render(<TaskCard {...defaultProps} />);
+    expect(screen.getByText('Test Task')).toBeInTheDocument();
+  });
+});
+```
+
+## Testing de APIs
+
+### Integration Tests
+```typescript
+// AI-Hint Testing: [API Integration] [Test de endpoints completos] [Request/Response, autenticación, validación]
+
+import request from 'supertest';
+import { app } from '../app';
+
+describe('Task API', () => {
+  it('should create a task successfully', async () => {
+    const response = await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send(taskData)
+      .expect(201);
+
+    expect(response.body.success).toBe(true);
+  });
+});
+```
+
+@test-helpers.ts
+@mock-factories.ts

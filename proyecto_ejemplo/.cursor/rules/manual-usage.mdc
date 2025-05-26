@@ -1,0 +1,77 @@
+---
+description: Regla manual para demostrar uso de Cursor Rules en TaskFlow
+globs: 
+alwaysApply: false
+---
+
+# Regla Manual - Uso de Cursor Rules
+
+Esta regla está disponible para invocación manual usando `@manual-usage` en el chat.
+
+## Cómo usar las reglas de TaskFlow
+
+### 1. Reglas Always Applied
+La regla `project-main.mdc` se aplica automáticamente a todo el proyecto y establece:
+- Convenciones de nomenclatura
+- Tecnologías aprobadas
+- Estructura de AI-Hints obligatoria
+
+### 2. Reglas Auto-Attached
+Estas reglas se activan automáticamente cuando trabajas en archivos específicos:
+
+- **Frontend (`react-components.mdc`)**: Se activa en archivos `.tsx`, `.ts` en `frontend/`
+- **Backend (`api-design.mdc`)**: Se activa en archivos del backend y APIs
+- **IA (`ai-integration.mdc`)**: Se activa cuando trabajas con servicios de IA
+
+### 3. Reglas Agent Requested
+- **Docker (`docker-deployment.mdc`)**: La IA puede decidir incluirla cuando es relevante
+- **Testing (`test-standards.mdc`)**: Disponible para consulta de la IA
+
+### 4. Comandos útiles en el chat
+
+Para aplicar patrones específicos, puedes usar:
+
+```
+"Crea un nuevo componente React siguiendo nuestras reglas de frontend"
+"Implementa un endpoint API siguiendo nuestros patrones"
+"Añade AI-Hints apropiados a este código"
+"Configura Docker para este servicio"
+"Crea tests siguiendo nuestros estándares"
+```
+
+### 5. Referencias a plantillas
+
+Las reglas referencian plantillas ubicadas en `.cursor/rules/templates/`:
+- `@task-model.ts`: Modelo de datos estándar
+- `@api-patterns.ts`: Patrones de API comunes
+
+### 6. AI-Hints requeridos
+
+Según nuestras reglas, todo código debe incluir AI-Hints apropiados:
+
+```typescript
+// AI-Hint Component: [ComponentName] [Propósito] [Responsabilidades]
+// AI-Hint Flow: [ProcessName] [Pasos del proceso] [Consideraciones especiales]
+// AI-Hint Data: [ModelName] [Estructura de datos] [Validaciones y relaciones]
+// AI-Hint Security: [SecurityAspect] [Protecciones implementadas] [Consideraciones]
+// AI-Hint Testing: [TestType] [Qué se prueba] [Estrategia de testing]
+```
+
+### Ejemplos de uso efectivo
+
+1. **"Necesito crear un componente de lista de tareas"**
+   - Se aplicarán automáticamente las reglas de React
+   - Se incluirán patrones de estado y UI
+   - Se añadirán AI-Hints apropiados
+
+2. **"Crea un endpoint para gestionar tareas"**
+   - Se aplicarán las reglas de API design
+   - Se incluirán patrones de validación
+   - Se añadirá manejo de errores estándar
+
+3. **"Configura Docker para desarrollo"**
+   - Se aplicarán las reglas de Docker
+   - Se incluirán mejores prácticas de seguridad
+   - Se configurará para hot reload
+
+¡Experimenta con estas reglas para ver cómo mejoran la consistencia y calidad del código generado!

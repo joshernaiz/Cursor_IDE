@@ -1,0 +1,600 @@
+---
+description: Reglas para Docker y despliegue en TaskFlow
+globs: 
+alwaysApply: false
+---
+
+# Reglas para Docker y Despliegue - TaskFlow
+
+## Principios de Dockerización
+
+### Mejores Prácticas
+- **Multi-stage builds**: Separar build y runtime para imágenes más pequeñas
+- **Layers optimization**: Cachear dependencias separadamente del código
+- **Security**: No ejecutar como root, usar imágenes oficiales
+- **Environment variables**: Configuración flexible por entorno
+
+### Estructura de Archivos Docker
+```
+proyecto_ejemplo/
+├── docker-compose.yml          # Orquestación local
+├── docker-compose.prod.yml     # Configuración producción
+├── backend/
+│   ├── Dockerfile             # Backend container
+│   └── .dockerignore          # Archivos excluidos
+├── frontend/
+│   ├── Dockerfile             # Frontend container
+│   └── .dockerignore          # Archivos excluidos
+└── docker/
+    ├── nginx/                 # Proxy reverso
+    └── mongo/                 # Scripts de inicialización
+```
+
+## Dockerfile para Backend (Node.js)
+
+```dockerfile
+# AI-Hint Component: [Backend Dockerfile] [Imagen multi-stage para Node.js] [Optimizada para desarrollo y producción]
+
+# Build stage
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package*.json ./
+COPY tsconfig.json ./
+
+# Install dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy source code
+COPY src/ ./src/
+
+# Build TypeScript
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS production
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S taskflow -u 1001
+
+WORKDIR /app
+
+# Copy built application
+COPY --from=builder --chown=taskflow:nodejs /app/dist ./dist
+COPY --from=builder --chown=taskflow:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=taskflow:nodejs /app/package.json ./
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+# Switch to non-root user
+USER taskflow
+
+# Expose port
+EXPOSE 3000
+
+# Start application
+CMD ["node", "dist/index.js"]
+```
+
+## Dockerfile para Frontend (React)
+
+```dockerfile
+# AI-Hint Component: [Frontend Dockerfile] [Imagen multi-stage para React] [Build optimizado con nginx]
+
+# Build stage
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci && npm cache clean --force
+
+# Copy source code
+COPY public/ ./public/
+COPY src/ ./src/
+COPY tsconfig.json ./
+COPY tailwind.config.js ./
+COPY postcss.config.js ./
+
+# Set build environment
+ARG REACT_APP_API_URL
+ARG REACT_APP_MCP_ENABLED
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ENV REACT_APP_MCP_ENABLED=$REACT_APP_MCP_ENABLED
+
+# Build application
+RUN npm run build
+
+# Production stage with nginx
+FROM nginx:alpine AS production
+
+# Copy nginx configuration
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Copy built app
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
+
+# Expose port
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+## Docker Compose para Desarrollo
+
+```yaml
+# AI-Hint Component: [Docker Compose Dev] [Orquestación para desarrollo] [Hot reload, debugging, volúmenes]
+
+version: '3.8'
+
+services:
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:6-jammy
+    container_name: taskflow-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-taskflow}
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    networks:
+      - taskflow-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: taskflow-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MONGODB_URI: mongodb://mongodb:27017/${MONGO_DB:-taskflow}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key}
+    volumes:
+      - ./backend/src:/app/src:ro
+      - backend_node_modules:/app/node_modules
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - taskflow-network
+
+volumes:
+  mongodb_data:
+  backend_node_modules:
+
+networks:
+  taskflow-network:
+    driver: bridge
+```
+
+## Docker Compose para Producción
+
+```yaml
+# AI-Hint Component: [Docker Compose Prod] [Orquestación para producción] [Proxy reverso, SSL, monitoreo]
+
+version: '3.8'
+
+services:
+  # Nginx Proxy Reverso
+  nginx:
+    image: nginx:alpine
+    container_name: taskflow-nginx
+    restart: unless-stopped
+    volumes:
+      - ./docker/nginx/prod.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+      - static_files:/usr/share/nginx/html
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - taskflow-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:6-jammy
+    container_name: taskflow-mongodb-prod
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    volumes:
+      - mongodb_prod_data:/data/db
+      - ./docker/mongo/backup:/backup
+    networks:
+      - taskflow-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: taskflow-backend-prod
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/${MONGO_DB}?authSource=admin
+      JWT_SECRET: ${JWT_SECRET}
+      MCP_API_KEY: ${MCP_API_KEY}
+      MCP_BASE_URL: ${MCP_BASE_URL}
+      LOG_LEVEL: info
+    volumes:
+      - app_logs:/app/logs
+    depends_on:
+      - mongodb
+    networks:
+      - taskflow-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL}
+        REACT_APP_MCP_ENABLED: ${REACT_APP_MCP_ENABLED}
+    container_name: taskflow-frontend-prod
+    restart: unless-stopped
+    volumes:
+      - static_files:/usr/share/nginx/html
+    depends_on:
+      - backend
+    networks:
+      - taskflow-network
+
+volumes:
+  mongodb_prod_data:
+  app_logs:
+  static_files:
+
+networks:
+  taskflow-network:
+    driver: bridge
+```
+
+## Scripts de Utilidad
+
+### Script de Desarrollo
+```bash
+#!/bin/bash
+# AI-Hint Flow: [Development Script] [Automatiza setup local] [Build, start, logs, cleanup]
+
+set -e
+
+# Colores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Funciones de utilidad
+log_info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+log_warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Verificar dependencias
+check_dependencies() {
+    log_info "Verificando dependencias..."
+    
+    if ! command -v docker &> /dev/null; then
+        log_error "Docker no está instalado"
+        exit 1
+    fi
+    
+    if ! command -v docker-compose &> /dev/null; then
+        log_error "Docker Compose no está instalado"
+        exit 1
+    fi
+    
+    log_info "Dependencias verificadas ✓"
+}
+
+# Setup inicial
+setup() {
+    log_info "Configurando entorno de desarrollo..."
+    
+    # Crear archivo .env si no existe
+    if [ ! -f .env ]; then
+        cp .env.example .env
+        log_info "Archivo .env creado desde .env.example"
+    fi
+    
+    # Crear directorios necesarios
+    mkdir -p docker/mongo/init-scripts
+    mkdir -p docker/nginx/ssl
+    mkdir -p logs
+    
+    log_info "Setup completado ✓"
+}
+
+# Iniciar servicios
+start() {
+    log_info "Iniciando servicios de desarrollo..."
+    docker-compose up -d
+    
+    # Esperar a que los servicios estén listos
+    log_info "Esperando a que los servicios estén listos..."
+    sleep 10
+    
+    # Verificar estado de los servicios
+    if docker-compose ps | grep -q "Up"; then
+        log_info "Servicios iniciados correctamente ✓"
+        log_info "Frontend: http://localhost:3001"
+        log_info "Backend: http://localhost:3000"
+        log_info "MongoDB: localhost:27017"
+    else
+        log_error "Error al iniciar algunos servicios"
+        docker-compose logs
+        exit 1
+    fi
+}
+
+# Detener servicios
+stop() {
+    log_info "Deteniendo servicios..."
+    docker-compose down
+    log_info "Servicios detenidos ✓"
+}
+
+# Limpiar todo
+clean() {
+    log_warn "Esto eliminará todos los contenedores, volúmenes e imágenes"
+    read -p "¿Estás seguro? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        docker-compose down -v --rmi all
+        docker system prune -f
+        log_info "Limpieza completada ✓"
+    fi
+}
+
+# Ver logs
+logs() {
+    if [ -z "$1" ]; then
+        docker-compose logs -f
+    else
+        docker-compose logs -f "$1"
+    fi
+}
+
+# Ejecutar tests
+test() {
+    log_info "Ejecutando tests..."
+    docker-compose exec backend npm test
+    docker-compose exec frontend npm test -- --watchAll=false
+}
+
+# Menú principal
+case "$1" in
+    "setup")
+        check_dependencies
+        setup
+        ;;
+    "start")
+        check_dependencies
+        start
+        ;;
+    "stop")
+        stop
+        ;;
+    "restart")
+        stop
+        start
+        ;;
+    "clean")
+        clean
+        ;;
+    "logs")
+        logs "$2"
+        ;;
+    "test")
+        test
+        ;;
+    *)
+        echo "Uso: $0 {setup|start|stop|restart|clean|logs|test}"
+        echo ""
+        echo "Comandos:"
+        echo "  setup    - Configuración inicial del proyecto"
+        echo "  start    - Iniciar servicios de desarrollo"
+        echo "  stop     - Detener servicios"
+        echo "  restart  - Reiniciar servicios"
+        echo "  clean    - Limpiar todo (contenedores, volúmenes, imágenes)"
+        echo "  logs     - Ver logs (opcionalmente de un servicio específico)"
+        echo "  test     - Ejecutar tests"
+        exit 1
+        ;;
+esac
+```
+
+## Variables de Entorno
+
+### .env.example
+```bash
+# AI-Hint Data: [Environment Variables] [Configuración del proyecto] [Development defaults, documentación]
+
+# Database Configuration
+MONGO_ROOT_USER=admin
+MONGO_ROOT_PASSWORD=password
+MONGO_DB=taskflow
+MONGO_PORT=27017
+
+# Backend Configuration
+BACKEND_PORT=3000
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+DEBUG_PORT=9229
+
+# Frontend Configuration
+FRONTEND_PORT=3001
+REACT_APP_API_URL=http://localhost:3000/api
+REACT_APP_MCP_ENABLED=true
+
+# MCP Configuration
+MCP_API_KEY=your-mcp-api-key
+MCP_BASE_URL=https://mcp.example.com
+MCP_PROJECT_ID=taskflow
+MCP_TIMEOUT=10000
+MCP_MAX_RETRIES=2
+
+# Redis Configuration (Optional)
+REDIS_PORT=6379
+
+# Logging
+LOG_LEVEL=debug
+
+# Security (Generate secure values for production)
+SESSION_SECRET=your-session-secret
+
+# Email Configuration (Optional)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+
+# Monitoring (Optional)
+ENABLE_METRICS=true
+METRICS_PORT=9090
+```
+
+## Configuración de Nginx
+
+### nginx.conf para desarrollo
+```nginx
+# AI-Hint Component: [Nginx Config] [Proxy reverso para desarrollo] [CORS, static files, API routing]
+
+worker_processes auto;
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+    use epoll;
+    multi_accept on;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    # Logging
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+    
+    access_log /var/log/nginx/access.log main;
+
+    # Performance
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    types_hash_max_size 2048;
+
+    # Gzip
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_types
+        text/plain
+        text/css
+        text/xml
+        text/javascript
+        application/json
+        application/javascript
+        application/xml+rss
+        application/atom+xml
+        image/svg+xml;
+
+    # Backend upstream
+    upstream backend {
+        server backend:3000;
+    }
+
+    server {
+        listen 80;
+        server_name localhost;
+
+        # Frontend static files
+        location / {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+            try_files $uri $uri/ /index.html;
+        }
+
+        # API proxy
+        location /api {
+            proxy_pass http://backend;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_cache_bypass $http_upgrade;
+            proxy_read_timeout 86400;
+        }
+
+        # Health check
+        location /health {
+            proxy_pass http://backend/health;
+            access_log off;
+        }
+    }
+}
+```
+
+@docker-scripts.sh
+@nginx-configs/

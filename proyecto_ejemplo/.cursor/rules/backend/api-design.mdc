@@ -1,0 +1,411 @@
+---
+description: Reglas para diseño de APIs RESTful en TaskFlow backend
+globs: ['backend/**/*.ts', 'backend/**/*.js', '**/api/**/*', '**/routes/**/*', '**/controllers/**/*']
+alwaysApply: false
+---
+
+# Reglas para APIs Backend - TaskFlow
+
+## Principios de Diseño de API
+
+### RESTful Design
+- **Recursos**: URLs representan recursos, no acciones
+- **Métodos HTTP**: Usar métodos apropiados (GET, POST, PUT, DELETE, PATCH)
+- **Status Codes**: Usar códigos HTTP estándar consistentemente
+- **Idempotencia**: POST no idempotente, PUT/DELETE idempotentes
+
+### Estructura de URLs
+```
+/api/v1/tasks                    # GET, POST
+/api/v1/tasks/:id               # GET, PUT, DELETE, PATCH
+/api/v1/tasks/:id/comments      # GET, POST
+/api/v1/projects/:id/tasks      # GET (filtro por proyecto)
+/api/v1/users/:id/tasks         # GET (filtro por usuario)
+```
+
+## Estructura de Controladores
+
+```typescript
+// AI-Hint Component: [TaskController] [Maneja operaciones CRUD de tareas] [Valida entrada, gestiona errores, transforma respuestas]
+
+import { Request, Response, NextFunction } from 'express';
+import { TaskService } from '../services/task-service';
+import { CreateTaskSchema, UpdateTaskSchema } from '../schemas/task-schemas';
+import { AuthenticatedRequest } from '../types/auth';
+
+export class TaskController {
+  constructor(private taskService: TaskService) {}
+
+  // AI-Hint Flow: [Crear tarea] [Validar datos → Crear en BD → Respuesta] [Manejo de errores de validación y BD]
+  async createTask(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      // Validación con Zod
+      const validatedData = CreateTaskSchema.parse(req.body);
+      
+      // Lógica de negocio
+      const task = await this.taskService.createTask({
+        ...validatedData,
+        userId: req.user.id
+      });
+      
+      // Respuesta consistente
+      res.status(201).json({
+        success: true,
+        data: task,
+        message: 'Tarea creada exitosamente'
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getTasks(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const { page = 1, limit = 10, status, priority, projectId } = req.query;
+      
+      const result = await this.taskService.getTasks({
+        userId: req.user.id,
+        pagination: { page: Number(page), limit: Number(limit) },
+        filters: { status, priority, projectId }
+      });
+      
+      res.json({
+        success: true,
+        data: result.tasks,
+        pagination: result.pagination,
+        message: 'Tareas obtenidas exitosamente'
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+```
+
+## Validación con Zod
+
+### Esquemas de Validación
+```typescript
+// AI-Hint Data: [Task Schemas] [Validación de entrada para operaciones de tareas] [Incluye validaciones de negocio y sanitización]
+
+import { z } from 'zod';
+
+export const CreateTaskSchema = z.object({
+  title: z.string()
+    .min(1, 'El título es requerido')
+    .max(200, 'El título no puede exceder 200 caracteres'),
+  
+  description: z.string()
+    .max(1000, 'La descripción no puede exceder 1000 caracteres')
+    .optional(),
+  
+  priority: z.enum(['low', 'medium', 'high']).default('medium'),
+  
+  status: z.enum(['pending', 'in-progress', 'completed']).default('pending'),
+  
+  dueDate: z.string()
+    .datetime('Fecha inválida')
+    .transform(date => new Date(date))
+    .optional(),
+  
+  projectId: z.string()
+    .regex(/^[0-9a-fA-F]{24}$/, 'ID de proyecto inválido')
+    .optional(),
+  
+  tags: z.array(z.string()).max(10, 'Máximo 10 tags permitidos').optional()
+});
+
+export const UpdateTaskSchema = CreateTaskSchema.partial();
+
+export const TaskQuerySchema = z.object({
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(10),
+  status: z.enum(['pending', 'in-progress', 'completed']).optional(),
+  priority: z.enum(['low', 'medium', 'high']).optional(),
+  projectId: z.string().regex(/^[0-9a-fA-F]{24}$/).optional(),
+  search: z.string().max(100).optional()
+});
+```
+
+## Manejo de Errores
+
+### Middleware de Errores
+```typescript
+// AI-Hint Security: [Error Handler] [Manejo centralizado de errores] [Sanitiza errores para producción, previene leak de información]
+
+import { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
+import { logger } from '../utils/logger';
+
+export const errorHandler = (
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  logger.error('Error occurred:', {
+    error: error.message,
+    stack: error.stack,
+    url: req.url,
+    method: req.method,
+    userId: (req as any).user?.id
+  });
+
+  // Errores de validación Zod
+  if (error instanceof ZodError) {
+    return res.status(400).json({
+      success: false,
+      error: 'Datos de entrada inválidos',
+      details: error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+      }))
+    });
+  }
+
+  // Errores de MongoDB
+  if (error.name === 'MongoError' || error.name === 'ValidationError') {
+    return res.status(400).json({
+      success: false,
+      error: 'Error de base de datos',
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Operación inválida'
+    });
+  }
+
+  // Errores de autenticación
+  if (error.name === 'UnauthorizedError') {
+    return res.status(401).json({
+      success: false,
+      error: 'No autorizado',
+      message: 'Token de acceso inválido o expirado'
+    });
+  }
+
+  // Error genérico
+  res.status(500).json({
+    success: false,
+    error: 'Error interno del servidor',
+    message: process.env.NODE_ENV === 'development' ? error.message : 'Algo salió mal'
+  });
+};
+```
+
+## Autenticación y Autorización
+
+### Middleware de Autenticación
+```typescript
+// AI-Hint Security: [Auth Middleware] [Verifica JWT y carga datos de usuario] [Maneja tokens expirados y usuarios inválidos]
+
+import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
+import { User } from '../models/user-model';
+
+export interface AuthenticatedRequest extends Request {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+}
+
+export const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        error: 'Token de acceso requerido'
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+    const user = await User.findById(decoded.userId).select('-password');
+    
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuario no encontrado'
+      });
+    }
+
+    (req as AuthenticatedRequest).user = {
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role
+    };
+    
+    next();
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      error: 'Token inválido'
+    });
+  }
+};
+```
+
+## Logging y Monitoreo
+
+### Configuración de Winston
+```typescript
+// AI-Hint Component: [Logger] [Sistema de logging centralizado] [Diferentes niveles, formato estructurado, rotación de archivos]
+
+import winston from 'winston';
+
+const logFormat = winston.format.combine(
+  winston.format.timestamp(),
+  winston.format.errors({ stack: true }),
+  winston.format.json()
+);
+
+export const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: logFormat,
+  defaultMeta: { service: 'taskflow-api' },
+  transports: [
+    new winston.transports.File({ 
+      filename: 'logs/error.log', 
+      level: 'error',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5
+    }),
+    new winston.transports.File({ 
+      filename: 'logs/combined.log',
+      maxsize: 5242880,
+      maxFiles: 5
+    })
+  ]
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.simple()
+    )
+  }));
+}
+```
+
+## Paginación y Filtrado
+
+### Patrón de Respuesta
+```typescript
+// AI-Hint Business: [Pagination Utils] [Utilidades para paginación consistente] [Valida parámetros, calcula offset, metadata]
+
+export interface PaginationParams {
+  page: number;
+  limit: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
+
+export const paginate = async <T>(
+  model: any,
+  filter: any,
+  { page, limit }: PaginationParams,
+  sort: any = { createdAt: -1 }
+): Promise<PaginatedResponse<T>> => {
+  const skip = (page - 1) * limit;
+  
+  const [data, total] = await Promise.all([
+    model.find(filter).sort(sort).skip(skip).limit(limit),
+    model.countDocuments(filter)
+  ]);
+  
+  const pages = Math.ceil(total / limit);
+  
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages,
+      hasNext: page < pages,
+      hasPrev: page > 1
+    }
+  };
+};
+```
+
+## Testing de APIs
+
+### Estructura de Tests
+```typescript
+// AI-Hint Testing: [API Tests] [Pruebas de integración para endpoints] [Mock de BD, autenticación, casos edge]
+
+import request from 'supertest';
+import { app } from '../app';
+import { User } from '../models/user-model';
+import { Task } from '../models/task-model';
+import { generateToken } from '../utils/auth';
+
+describe('Task API', () => {
+  let authToken: string;
+  let userId: string;
+
+  beforeEach(async () => {
+    await User.deleteMany({});
+    await Task.deleteMany({});
+    
+    const user = await User.create({
+      email: 'test@example.com',
+      password: 'password123',
+      name: 'Test User'
+    });
+    
+    userId = user._id.toString();
+    authToken = generateToken(userId);
+  });
+
+  describe('POST /api/v1/tasks', () => {
+    it('should create a new task', async () => {
+      const taskData = {
+        title: 'Test Task',
+        description: 'Test Description',
+        priority: 'high'
+      };
+
+      const response = await request(app)
+        .post('/api/v1/tasks')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(taskData)
+        .expect(201);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.title).toBe(taskData.title);
+      expect(response.body.data.userId).toBe(userId);
+    });
+
+    it('should return 400 for invalid data', async () => {
+      const response = await request(app)
+        .post('/api/v1/tasks')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ title: '' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBe('Datos de entrada inválidos');
+    });
+  });
+});
+```
+
+@api-response-types.ts
+@middleware-patterns.ts

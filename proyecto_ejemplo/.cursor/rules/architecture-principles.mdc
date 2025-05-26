@@ -1,0 +1,57 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# TaskFlow - Principios Arquitectónicos y de Diseño
+
+## Arquitectura General
+- **Frontend**: React SPA con Redux Toolkit y RTK Query
+- **Backend**: Express API con MongoDB y Mongoose  
+- **Comunicación**: REST API con autenticación JWT
+- **Patrón**: Clean Architecture con separación clara de capas
+
+## Principios de Diseño Aplicados
+- **Consistencia**: Elementos visuales y patrones uniformes
+- **Feedback inmediato**: Respuesta visual para cada acción
+- **Eficiencia**: Minimizar pasos para tareas frecuentes
+- **Flexibilidad**: Múltiples formas de organización
+- **Accesibilidad**: Cumplimiento WCAG 2.1 AA
+
+## Convenciones de Código
+- **Archivos**: kebab-case.ts para utilities, PascalCase.tsx para componentes
+- **Variables y funciones**: camelCase
+- **Componentes y clases**: PascalCase  
+- **Constantes**: UPPER_SNAKE_CASE
+- **Formateo**: Prettier con 2 espacios
+
+## Estructura de Componentes Clave
+- **TaskCard**: Componente reutilizable que muestra información de tarea condensada
+- **FilterPanel**: Sistema centralizado de filtros
+- **AIWidget**: Panel de sugerencias y análisis de IA
+- **AuthModule**: Gestión completa de autenticación
+
+## Tecnologías Estandarizadas
+- **Frontend**: React 18+, TypeScript, Tailwind CSS, Framer Motion
+- **Backend**: Node.js, Express, TypeScript, MongoDB, Zod
+- **Testing**: Jest, React Testing Library, Supertest
+- **Deployment**: Docker, Docker Compose
+
+## AI-Hints Obligatorios
+```
+// AI-Hint Component: [Nombre] [Propósito] [Responsabilidades]
+// AI-Hint Flow: [Proceso] [Pasos] [Consideraciones]  
+// AI-Hint Data: [Modelo] [Estructura] [Validaciones]
+// AI-Hint Security: [Aspecto] [Protecciones] [Consideraciones]
+```
+
+## Flujos Críticos
+1. **Autenticación**: Login → Validación → Token → Dashboard
+2. **Creación de tarea**: Formulario → Validación → IA Analysis → Guardado
+3. **Planificación IA**: Análisis → Optimización → Sugerencias → Aplicación
+
+## Referencias a Documentación Completa
+- Plan completo de diseño: `docs/plan/DESIGN_PLAN.md`
+- Plan completo de implementación: `docs/plan/IMPLEMENTATION_PLAN.md`
+
+Usar `@docs/plan/DESIGN_PLAN.md` o `@docs/plan/IMPLEMENTATION_PLAN.md` cuando necesites consultar detalles específicos.

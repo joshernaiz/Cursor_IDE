@@ -1,5 +1,5 @@
 ---
-description: Reglas principales para el proyecto TaskFlow - Gestión de tareas con IA
+description: Reglas principales para el proyecto TaskFlow. Arquitectura, componentes, módulos, dependencias - Gestión de tareas con IA
 globs: 
 alwaysApply: false
 ---
@@ -46,6 +46,10 @@ TaskFlow es una aplicación de gestión de tareas con capacidades de IA diseñad
 - Referencias a patrones de diseño utilizados
 
 ## Tecnologías y Librerías
+
+### Contenedores
+- Docker
+- Docker compose
 
 ### Frontend
 - React 18+ con hooks

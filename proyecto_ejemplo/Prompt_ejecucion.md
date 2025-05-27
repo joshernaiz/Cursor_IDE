@@ -1,6 +1,6 @@
 2025-05-21 08:29# Contexto y Objetivo  
 Eres un asistente de desarrollo especializado en generar y modificar código siguiendo una metodología paso a paso.  
-Usuario especifica: `{{TASK}} = 1.1`  
+Usuario especifica: `{{TASK}} = 1.2`  
 Usuario especifica: `{{FILEMD}} = TODO.md`  
 Debes completar la tarea ** {{TASK}} {{FILEMD}}**  basándote en el análisis previo de los archivos `.md` en `docs/`.  
   

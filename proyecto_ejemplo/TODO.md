@@ -20,34 +20,44 @@ Esta lista de tareas detalla los pasos concretos para implementar el proyecto Ta
 
 **Comando de prueba**: `./scripts/1.1_structure_test.sh`
 
-### 1.2 Configuración frontend
-- [ ] Inicializar proyecto React con Vite y TypeScript
-- [ ] Configurar ESLint y Prettier
-- [ ] Instalar dependencias core (React, React Router, Redux Toolkit, Tailwind CSS)
+### 1.2 Configuración Docker ✅ COMPLETADA
+- [x] Crear Dockerfile para frontend (desarrollo y producción)
+- [x] Crear Dockerfile para backend (desarrollo y producción)
+- [x] Crear docker-compose.yml para desarrollo
+- [x] Crear docker-compose.prod.yml para producción
+- [x] Configurar servicios de MongoDB y Redis en contenedores
+- [x] Configurar volúmenes para persistencia de datos y código en desarrollo
+- [x] Configurar variables de entorno para contenedores
+- [x] Añadir scripts para construir y ejecutar contenedores
+
+**Comando de prueba**: `./scripts/1.2_docker_test.sh`
+
+### 1.3 Configuración frontend con Docker
+- [ ] Inicializar proyecto React con Vite y TypeScript en contenedor
+- [ ] Configurar ESLint y Prettier en contenedor
+- [ ] Instalar dependencias core (React, React Router, Redux Toolkit, Tailwind CSS) vía Docker
 - [ ] Configurar estructura de carpetas frontend (components, hooks, pages, etc.)
 - [ ] Crear archivo de configuración de Tailwind
 - [ ] Configurar sistema de rutas básico
+- [ ] Configurar hot reload para desarrollo en contenedor
+- [ ] Probar que el frontend se ejecute correctamente en Docker
 
-### 1.3 Configuración backend
-- [ ] Inicializar proyecto Node.js con TypeScript
-- [ ] Configurar ESLint y Prettier
-- [ ] Instalar dependencias core (Express, Mongoose, JWT, Zod)
+### 1.4 Configuración backend con Docker
+- [ ] Inicializar proyecto Node.js con TypeScript en contenedor
+- [ ] Configurar ESLint y Prettier en contenedor
+- [ ] Instalar dependencias core (Express, Mongoose, JWT, Zod) vía Docker
 - [ ] Configurar estructura de carpetas backend (api, services, db, etc.)
 - [ ] Configurar servidor Express básico
-- [ ] Configurar conexión a MongoDB
+- [ ] Configurar conexión a MongoDB en contenedor
+- [ ] Configurar auto-restart para desarrollo en contenedor
+- [ ] Probar que el backend se ejecute correctamente en Docker
 
-### 1.4 Configuración de Cursor IDE
+### 1.5 Configuración de Cursor IDE
 - [ ] Crear archivo `.cursor.json` inicial con metadatos del proyecto (omitir si ya existe)
 - [ ] Definir puntos de entrada principales y estructura
 - [ ] Configurar convenciones de código y AI-Hints
 - [ ] Configurar patrones de inclusión/exclusión de archivos
-
-### 1.5 Configuración Docker
-- [ ] Crear Dockerfile para frontend
-- [ ] Crear Dockerfile para backend
-- [ ] Crear docker-compose.yml para orquestar servicios
-- [ ] Configurar volúmenes para persistencia
-- [ ] Añadir scripts para construir y ejecutar contenedores
+- [ ] Configurar integración con Docker para desarrollo
 
 ## 2. Implementación de autenticación
 
@@ -273,30 +283,32 @@ Esta lista de tareas detalla los pasos concretos para implementar el proyecto Ta
 
 ## 9. Despliegue
 
-### 9.1 Optimización
-- [ ] Configurar bundling y minificación para producción
+### 9.1 Optimización para producción
+- [ ] Configurar bundling y minificación para producción en Dockerfiles
 - [ ] Implementar lazy loading para componentes
 - [ ] Optimizar imágenes y recursos estáticos
-- [ ] Configurar caching apropiado
+- [ ] Configurar caching apropiado en contenedores
 - [ ] Implementar estrategias de rendimiento (memoization, virtualization)
+- [ ] Optimizar Dockerfiles para producción (multi-stage builds)
+- [ ] Configurar health checks y reinicio automático
 
 ### 9.2 Configuración de entornos
-- [ ] Configurar variables de entorno para desarrollo
-- [ ] Configurar variables de entorno para staging
-- [ ] Configurar variables de entorno para producción
-- [ ] Implementar estrategia de secretos seguros
-- [ ] Crear scripts para cambio entre entornos
+- [ ] Ajustar variables de entorno en docker-compose para staging
+- [ ] Ajustar variables de entorno en docker-compose para producción
+- [ ] Implementar estrategia de secretos seguros con Docker secrets
+- [ ] Crear scripts para cambio entre entornos Docker
+- [ ] Configurar diferentes perfiles de docker-compose
 
-### 9.3 Dockerización
-- [ ] Optimizar Dockerfiles para producción
-- [ ] Configurar docker-compose para diferentes entornos
-- [ ] Implementar health checks y reinicio automático
-- [ ] Configurar volúmenes para persistencia
+### 9.3 Operaciones y mantenimiento
+- [ ] Configurar volúmenes para persistencia y backup
 - [ ] Crear scripts de backup y restauración
+- [ ] Implementar monitoreo de contenedores
+- [ ] Configurar logs centralizados
+- [ ] Crear documentación de operaciones
 
 ### 9.4 CI/CD (opcional)
-- [ ] Configurar GitHub Actions para CI
-- [ ] Implementar pipeline de testing automático
-- [ ] Crear flujo de deployment a staging
+- [ ] Configurar GitHub Actions para CI con Docker
+- [ ] Implementar pipeline de testing automático en contenedores
+- [ ] Crear flujo de deployment a staging con Docker
 - [ ] Configurar deployment manual a producción
 - [ ] Implementar notificaciones de estado de pipeline

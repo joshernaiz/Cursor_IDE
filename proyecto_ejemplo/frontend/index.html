@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- AI-Hint Component: [HTML Document] [SPA entry point] [SEO optimizado, PWA ready, performance] -->
+  
+  <!-- Primary Meta Tags -->
+  <title>TaskFlow - Gestión de Tareas con IA</title>
+  <meta name="title" content="TaskFlow - Gestión de Tareas con IA" />
+  <meta name="description" content="Organiza, prioriza y completa tus tareas de manera eficiente con la ayuda de inteligencia artificial. TaskFlow te ayuda a gestionar proyectos y mejorar tu productividad." />
+  <meta name="keywords" content="gestión de tareas, productividad, IA, organización, proyectos, todo list" />
+  <meta name="author" content="TaskFlow Team" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://taskflow.app/" />
+  <meta property="og:title" content="TaskFlow - Gestión de Tareas con IA" />
+  <meta property="og:description" content="Organiza, prioriza y completa tus tareas de manera eficiente con la ayuda de inteligencia artificial." />
+  <meta property="og:image" content="/og-image.png" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://taskflow.app/" />
+  <meta property="twitter:title" content="TaskFlow - Gestión de Tareas con IA" />
+  <meta property="twitter:description" content="Organiza, prioriza y completa tus tareas de manera eficiente con la ayuda de inteligencia artificial." />
+  <meta property="twitter:image" content="/twitter-image.png" />
+  
+  <!-- Favicon and Icons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Theme Colors -->
+  <meta name="theme-color" content="#3b82f6" />
+  <meta name="msapplication-TileColor" content="#3b82f6" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
+  
+  <!-- Performance and Security -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index, follow" />
+  <meta name="googlebot" content="index, follow" />
+  
+  <!-- Preconnect to external domains for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <!-- Security headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' ws: wss:;" />
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/src/main.tsx" as="script" />
+  
+  <!-- Environment variables for client -->
+  <script>
+    window.ENV = {
+      API_URL: '%VITE_API_URL%',
+      MCP_ENABLED: '%VITE_MCP_ENABLED%',
+      APP_VERSION: '%VITE_APP_VERSION%'
+    };
+  </script>
+</head>
+<body>
+  <!-- Accessibility: Skip navigation link -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-lg z-50">
+    Saltar al contenido principal
+  </a>
+  
+  <!-- No JavaScript fallback -->
+  <noscript>
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #f8fafc; display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: system-ui, sans-serif; text-align: center; padding: 2rem;">
+      <h1 style="color: #1e293b; margin-bottom: 1rem;">JavaScript requerido</h1>
+      <p style="color: #64748b; max-width: 500px; line-height: 1.6;">
+        TaskFlow requiere JavaScript para funcionar correctamente. 
+        Por favor, habilita JavaScript en tu navegador y recarga la página.
+      </p>
+      <p style="color: #64748b; margin-top: 1rem; font-size: 0.875rem;">
+        Si tienes JavaScript habilitado y sigues viendo este mensaje, 
+        por favor contacta con nuestro soporte técnico.
+      </p>
+    </div>
+  </noscript>
+  
+  <!-- App container -->
+  <div id="root" aria-label="TaskFlow Application">
+    <!-- Loading fallback while React loads -->
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+      <div style="width: 40px; height: 40px; border: 3px solid #e5e7eb; border-top: 3px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+      <p style="margin-top: 1rem; color: #6b7280; font-family: system-ui, sans-serif;">Cargando TaskFlow...</p>
+      <style>
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      </style>
+    </div>
+  </div>
+  
+  <!-- Main app script -->
+  <script type="module" src="/src/main.tsx"></script>
+  
+  <!-- Service Worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+          })
+          .catch((registrationError) => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
+</body>
+</html> 

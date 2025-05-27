@@ -32,25 +32,29 @@ Esta lista de tareas detalla los pasos concretos para implementar el proyecto Ta
 
 **Comando de prueba**: `./scripts/1.2_docker_test.sh`
 
-### 1.3 Configuración frontend con Docker
-- [ ] Inicializar proyecto React con Vite y TypeScript en contenedor
-- [ ] Configurar ESLint y Prettier en contenedor
-- [ ] Instalar dependencias core (React, React Router, Redux Toolkit, Tailwind CSS) vía Docker
-- [ ] Configurar estructura de carpetas frontend (components, hooks, pages, etc.)
-- [ ] Crear archivo de configuración de Tailwind
-- [ ] Configurar sistema de rutas básico
-- [ ] Configurar hot reload para desarrollo en contenedor
-- [ ] Probar que el frontend se ejecute correctamente en Docker
+### 1.3 Configuración frontend con Docker ✅ COMPLETADA
+- [x] 1.3.1 - Inicializar proyecto React con Vite y TypeScript en contenedor ✅
+- [x] 1.3.2 - Configurar ESLint y Prettier en contenedor ✅  
+- [x] 1.3.3 - Instalar dependencias core (React, React Router, Redux Toolkit, Tailwind CSS) vía Docker ✅
+- [x] 1.3.4 - Configurar estructura de carpetas frontend (components, hooks, pages, etc.) ✅
+- [x] 1.3.5 - Crear archivo de configuración de Tailwind ✅
+- [x] 1.3.6 - Configurar sistema de rutas básico y Redux Toolkit ✅
+- [x] 1.3.7 - Configurar hot reload para desarrollo en contenedor ✅
+- [x] 1.3.8 - Probar que el frontend se ejecute correctamente en Docker ✅
 
-### 1.4 Configuración backend con Docker
-- [ ] Inicializar proyecto Node.js con TypeScript en contenedor
-- [ ] Configurar ESLint y Prettier en contenedor
-- [ ] Instalar dependencias core (Express, Mongoose, JWT, Zod) vía Docker
-- [ ] Configurar estructura de carpetas backend (api, services, db, etc.)
-- [ ] Configurar servidor Express básico
-- [ ] Configurar conexión a MongoDB en contenedor
-- [ ] Configurar auto-restart para desarrollo en contenedor
-- [ ] Probar que el backend se ejecute correctamente en Docker
+**Comando de prueba**: `./scripts/1.3.8_frontend_docker_test.sh` o `./scripts/frontend-quick-test.sh`
+
+### 1.4 Configuración backend con Docker ✅ COMPLETADA
+- [x] 1.4.1 - Crear estructura de directorios backend ✅
+- [x] 1.4.2 - Configurar package.json con dependencias core ✅
+- [x] 1.4.3 - Configurar TypeScript y herramientas de desarrollo ✅
+- [x] 1.4.4 - Crear Dockerfile multi-stage para backend ✅
+- [x] 1.4.5 - Crear servidor Express básico ✅
+- [x] 1.4.6 - Configurar conexión a MongoDB ✅
+- [x] 1.4.7 - Configurar auto-restart para desarrollo ✅
+- [x] 1.4.8 - Probar que el backend se ejecute correctamente en Docker ✅
+
+**Comando de prueba**: `./scripts/backend-quick-test.sh` o `./scripts/1.4.8_backend_docker_test.sh`
 
 ### 1.5 Configuración de Cursor IDE
 - [ ] Crear archivo `.cursor.json` inicial con metadatos del proyecto (omitir si ya existe)

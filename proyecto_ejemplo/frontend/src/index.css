@@ -1,0 +1,273 @@
+/* AI-Hint Component: [Main CSS] [Estilos globales] [Tailwind base, custom properties, fuentes] */
+/* AI-Hint Flow: [CSS Loading] [Base styles, Tailwind layers] [Custom variables, global styles] */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables */
+:root {
+  /* Light theme colors */
+  --color-bg-primary: theme('colors.white');
+  --color-bg-secondary: theme('colors.gray.50');
+  --color-bg-tertiary: theme('colors.gray.100');
+  --color-text-primary: theme('colors.gray.900');
+  --color-text-secondary: theme('colors.gray.600');
+  --color-text-tertiary: theme('colors.gray.400');
+  --color-border: theme('colors.gray.200');
+  --color-border-hover: theme('colors.gray.300');
+  
+  /* Animation variables */
+  --animation-duration-fast: 150ms;
+  --animation-duration-normal: 250ms;
+  --animation-duration-slow: 350ms;
+  
+  /* Z-index scale */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}
+
+/* Dark theme colors */
+.dark {
+  --color-bg-primary: theme('colors.gray.900');
+  --color-bg-secondary: theme('colors.gray.800');
+  --color-bg-tertiary: theme('colors.gray.700');
+  --color-text-primary: theme('colors.gray.100');
+  --color-text-secondary: theme('colors.gray.300');
+  --color-text-tertiary: theme('colors.gray.500');
+  --color-border: theme('colors.gray.700');
+  --color-border-hover: theme('colors.gray.600');
+}
+
+/* Base layer customizations */
+@layer base {
+  * {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+    @apply font-sans antialiased;
+    @apply transition-colors duration-300;
+  }
+
+  /* Focus styles */
+  *:focus {
+    @apply outline-none;
+  }
+
+  *:focus-visible {
+    @apply ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900;
+  }
+
+  /* Heading styles */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-gray-900 dark:text-gray-100 font-semibold;
+  }
+
+  h1 {
+    @apply text-3xl lg:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl lg:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl lg:text-2xl;
+  }
+
+  h4 {
+    @apply text-lg lg:text-xl;
+  }
+
+  /* Link styles */
+  a {
+    @apply text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300;
+    @apply transition-colors duration-200;
+  }
+
+  /* Selection styles */
+  ::selection {
+    @apply bg-primary-100 text-primary-900;
+  }
+
+  ::-moz-selection {
+    @apply bg-primary-100 text-primary-900;
+  }
+}
+
+/* Component layer for reusable patterns */
+@layer components {
+  /* Button base styles */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700;
+    @apply focus:ring-primary-500;
+    @apply dark:bg-primary-600 dark:hover:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-900 hover:bg-gray-200;
+    @apply focus:ring-gray-500;
+    @apply dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600;
+  }
+
+  .btn-outline {
+    @apply border border-gray-300 text-gray-700 hover:bg-gray-50;
+    @apply focus:ring-gray-500;
+    @apply dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800;
+  }
+
+  /* Input base styles */
+  .input {
+    @apply block w-full px-3 py-2 text-sm;
+    @apply bg-white dark:bg-gray-800;
+    @apply border border-gray-300 dark:border-gray-600;
+    @apply rounded-lg shadow-sm;
+    @apply placeholder-gray-400 dark:placeholder-gray-500;
+    @apply focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+    @apply transition-colors duration-200;
+  }
+
+  /* Card styles */
+  .card {
+    @apply bg-white dark:bg-gray-800;
+    @apply border border-gray-200 dark:border-gray-700;
+    @apply rounded-xl shadow-card;
+    @apply transition-shadow duration-200;
+  }
+
+  .card-hover {
+    @apply hover:shadow-elevated;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    @apply inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full;
+    animation: spin 1s linear infinite;
+  }
+
+  /* Toast notification styles */
+  .toast {
+    @apply fixed top-4 right-4 max-w-sm w-full;
+    @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
+    @apply rounded-lg shadow-elevated;
+    @apply transform transition-all duration-300;
+    z-index: var(--z-toast);
+  }
+
+  .toast-enter {
+    @apply translate-x-full opacity-0;
+  }
+
+  .toast-enter-active {
+    @apply translate-x-0 opacity-100;
+  }
+
+  .toast-exit {
+    @apply translate-x-0 opacity-100;
+  }
+
+  .toast-exit-active {
+    @apply translate-x-full opacity-0;
+  }
+}
+
+/* Utility layer for custom utilities */
+@layer utilities {
+  /* Custom scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray.400') theme('colors.gray.100');
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 dark:bg-gray-600 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500 dark:bg-gray-500;
+  }
+
+  /* Text truncation utilities */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Safe area utilities for mobile */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-break-before {
+    break-before: page;
+  }
+
+  .print-break-after {
+    break-after: page;
+  }
+} 

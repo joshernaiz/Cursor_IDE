@@ -1,0 +1,37 @@
+# AI-Hint Component: [Prettier Ignore] [Exclusiones de formateo] [Build artifacts, config files]
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Package manager lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
+*.tsbuildinfo
+
+# Coverage reports
+coverage/
+
+# Docker
+Dockerfile
+.dockerignore 

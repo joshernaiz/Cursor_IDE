@@ -2,9 +2,9 @@
 # AI-Hint Flow: [Build process] [Development con Vite HMR, production con nginx] [Optimización de assets estáticos]
 
 # ========================================
-# Development Stage
+# Development Stage - Hot Reload Optimized
 # ========================================
-FROM node:24-alpine AS development
+FROM node:20-alpine AS development
 
 # Crear usuario no-root para desarrollo
 RUN addgroup -g 1001 -S nodejs && \
@@ -12,33 +12,56 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app
 
-# Instalar dependencias de sistema para desarrollo
+# Instalar dependencias de sistema para desarrollo y hot reload
 RUN apk add --no-cache \
     curl \
     git \
-    bash
+    bash \
+    inotify-tools \
+    procps
+
+# Configurar optimizaciones de filesystem para hot reload
+RUN echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf
 
 # Copiar package files para mejor caching
 COPY --chown=taskflow:nodejs package*.json ./
 
-# Instalar dependencias (incluyendo devDependencies)
-RUN npm ci && npm cache clean --force
+# Instalar dependencias con optimizaciones para desarrollo
+RUN npm ci --include=dev && \
+    npm cache clean --force
 
-# Copiar código fuente
-COPY --chown=taskflow:nodejs . .
+# Crear directorios para volúmenes montados
+RUN mkdir -p src public && \
+    chown -R taskflow:nodejs src public
+
+# Copiar archivos de configuración (se pueden sobrescribir con volúmenes)
+COPY --chown=taskflow:nodejs vite.config.ts tsconfig.json tailwind.config.js postcss.config.js ./
+COPY --chown=taskflow:nodejs index.html ./
+
+# Asegurar permisos de escritura para el usuario taskflow
+RUN chown -R taskflow:nodejs /app && \
+    chmod -R 755 /app
 
 # Cambiar a usuario no-root
 USER taskflow
 
-# Exponer puerto de Vite
+# Exponer puertos para Vite dev server y HMR
 EXPOSE 3001
+EXPOSE 24678
 
-# Health check para desarrollo
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+# Variables de entorno para hot reload óptimo
+ENV VITE_DEV_SERVER_HOST=0.0.0.0
+ENV VITE_DEV_SERVER_PORT=3001
+ENV VITE_HMR_PORT=3001
+ENV CHOKIDAR_USEPOLLING=true
+ENV CHOKIDAR_INTERVAL=100
+
+# Health check optimizado para desarrollo
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:3001 || exit 1
 
-# Comando para desarrollo con hot reload
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3001"]
+# Comando para desarrollo con hot reload optimizado
+CMD ["npm", "run", "dev"]
 
 # ========================================
 # Build Stage

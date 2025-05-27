@@ -1,0 +1,132 @@
+# Docker Compose for Development - Hot Reload Optimized
+# AI-Hint Component: [Docker Dev Setup] [Hot reload configuration] [Development containers with volume mounting]
+# AI-Hint Flow: [Development Workflow] [File watching, live reload] [Optimized for fast feedback]
+
+version: '3.8'
+
+services:
+  # Frontend Development Service - Hot Reload Optimized
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: taskflow-frontend-dev
+    ports:
+      - "3001:3001"  # Vite dev server
+      - "3001:3001"  # HMR port (same as dev server)
+    volumes:
+      # Source code mounting for hot reload
+      - ./frontend/src:/app/src:delegated
+      - ./frontend/public:/app/public:delegated
+      - ./frontend/index.html:/app/index.html:delegated
+      
+      # Configuration files
+      - ./frontend/vite.config.ts:/app/vite.config.ts:delegated
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js:delegated
+      - ./frontend/postcss.config.js:/app/postcss.config.js:delegated
+      - ./frontend/tsconfig.json:/app/tsconfig.json:delegated
+      
+      # Package files (for dependency changes)
+      - ./frontend/package.json:/app/package.json:delegated
+      - ./frontend/package-lock.json:/app/package-lock.json:delegated
+      
+      # Node modules volume (for performance)
+      - frontend_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_DEV_SERVER_PORT=3001
+      - VITE_DEV_SERVER_HOST=0.0.0.0
+      - VITE_API_URL=http://backend-dev:3000/api
+      - VITE_HMR_PORT=3001
+      - VITE_HMR_HOST=localhost
+      - VITE_ENABLE_POLLING=true
+    command: npm run dev
+    networks:
+      - taskflow-dev
+    depends_on:
+      - backend-dev
+    stdin_open: true
+    tty: true
+
+  # Backend Development Service
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: taskflow-backend-dev
+    ports:
+      - "3000:3000"   # API server
+      - "9229:9229"   # Node.js debugger
+    volumes:
+      # Source code mounting for hot reload
+      - ./backend/src:/app/src:delegated
+      - ./backend/package.json:/app/package.json:delegated
+      - ./backend/package-lock.json:/app/package-lock.json:delegated
+      - ./backend/tsconfig.json:/app/tsconfig.json:delegated
+      
+      # Node modules volume
+      - backend_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongodb-dev:27017/taskflow_dev
+      - REDIS_URL=redis://redis-dev:6379
+      - JWT_SECRET=dev_secret_key_change_in_production
+      - JWT_EXPIRES_IN=1d
+      - CORS_ORIGIN=http://localhost:3001
+    command: npm run dev:debug
+    networks:
+      - taskflow-dev
+    depends_on:
+      - mongodb-dev
+      - redis-dev
+    stdin_open: true
+    tty: true
+
+  # MongoDB for Development
+  mongodb-dev:
+    image: mongo:7.0
+    container_name: taskflow-mongodb-dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+      - ./scripts/mongodb/init-dev.js:/docker-entrypoint-initdb.d/init.js:ro
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin_password
+      - MONGO_INITDB_DATABASE=taskflow_dev
+    networks:
+      - taskflow-dev
+
+  # Redis for Development
+  redis-dev:
+    image: redis:7.2-alpine
+    container_name: taskflow-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - taskflow-dev
+
+volumes:
+  # Named volumes for node_modules (performance optimization)
+  frontend_node_modules:
+    driver: local
+  backend_node_modules:
+    driver: local
+  
+  # Data persistence volumes
+  mongodb_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+
+networks:
+  taskflow-dev:
+    driver: bridge
+    name: taskflow-development 

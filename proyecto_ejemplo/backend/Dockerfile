@@ -1,10 +1,10 @@
-# AI-Hint Component: [Backend Dockerfile] [Imagen multi-stage para Node.js] [Optimizada para desarrollo y producción]
-# AI-Hint Flow: [Build process] [Development con hot reload, production optimizado] [Seguridad con usuario no-root]
+# AI-Hint Component: [Backend Dockerfile] [Multi-stage build para Node.js API] [Desarrollo con hot reload, producción optimizada]
+# AI-Hint Flow: [Build Process] [Development stage con tsx watch, production con build optimizado] [Security con non-root user]
 
 # ========================================
-# Development Stage
+# Development Stage - Hot Reload with tsx
 # ========================================
-FROM node:18-alpine AS development
+FROM node:20-alpine AS development
 
 # Crear usuario no-root para desarrollo
 RUN addgroup -g 1001 -S nodejs && \
@@ -16,32 +16,57 @@ WORKDIR /app
 RUN apk add --no-cache \
     curl \
     git \
-    bash
+    bash \
+    tini
 
-# Copiar package files para mejor caching
+# Copiar package files para mejor caching de dependencias
 COPY --chown=taskflow:nodejs package*.json ./
 
-# Instalar dependencias (incluyendo devDependencies)
-RUN npm ci && npm cache clean --force
+# Instalar dependencias con cache optimizado
+RUN npm ci --include=dev && \
+    npm cache clean --force
 
-# Copiar código fuente
-COPY --chown=taskflow:nodejs . .
+# Crear directorios para volúmenes montados
+RUN mkdir -p src logs && \
+    chown -R taskflow:nodejs src logs
+
+# Copiar archivos de configuración (pueden ser sobrescritos por volúmenes)
+COPY --chown=taskflow:nodejs tsconfig.json ./
+COPY --chown=taskflow:nodejs .eslintrc.json ./
+COPY --chown=taskflow:nodejs .prettierrc ./
+COPY --chown=taskflow:nodejs jest.config.js ./
+
+# Copiar código fuente para desarrollo
+COPY --chown=taskflow:nodejs src/ ./src/
+
+# Asegurar permisos correctos
+RUN chown -R taskflow:nodejs /app && \
+    chmod -R 755 /app
 
 # Cambiar a usuario no-root
 USER taskflow
 
-# Exponer puerto de desarrollo y debug
-EXPOSE 3000 9229
+# Exponer puertos para API y debugging
+EXPOSE 3000
+EXPOSE 9229
+
+# Variables de entorno para desarrollo
+ENV NODE_ENV=development
+ENV PORT=3000
+ENV DEBUG_PORT=9229
 
 # Health check para desarrollo
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:3000/health || exit 1
 
-# Comando por defecto para desarrollo (con hot reload)
-CMD ["npm", "run", "dev"]
+# Usar tini como init system para manejo correcto de señales
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# Comando para desarrollo con tsx watch
+CMD ["npm", "run", "dev:docker"]
 
 # ========================================
-# Build Stage
+# Build Stage - Compilación TypeScript
 # ========================================
 FROM node:18-alpine AS builder
 
@@ -51,27 +76,32 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Instalar solo dependencias de producción
-RUN npm ci --only=production && npm cache clean --force
-
-# Instalar dependencias de desarrollo para el build
-RUN npm install --only=development
+# Instalar dependencias de producción y development para build
+RUN npm ci && npm cache clean --force
 
 # Copiar código fuente
 COPY src/ ./src/
 
-# Construir aplicación TypeScript
+# Variables de entorno para build
+ARG NODE_ENV=production
+ENV NODE_ENV=$NODE_ENV
+
+# Compilar TypeScript a JavaScript
 RUN npm run build
 
+# Verificar que el build se creó correctamente
+RUN ls -la dist/ && \
+    test -f dist/index.js
+
 # ========================================
-# Production Stage
+# Production Stage - Runtime optimizado
 # ========================================
 FROM node:18-alpine AS production
 
 # Instalar dependencias de sistema mínimas
 RUN apk add --no-cache \
     curl \
-    dumb-init
+    tini
 
 # Crear usuario no-root para producción
 RUN addgroup -g 1001 -S nodejs && \
@@ -79,26 +109,38 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app
 
+# Copiar package files y instalar solo dependencias de producción
+COPY package*.json ./
+RUN npm ci --only=production && \
+    npm cache clean --force && \
+    rm -rf /root/.npm
+
 # Copiar aplicación compilada desde builder
 COPY --from=builder --chown=taskflow:nodejs /app/dist ./dist
-COPY --from=builder --chown=taskflow:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=taskflow:nodejs /app/package.json ./
 
 # Crear directorio para logs
-RUN mkdir -p /app/logs && chown taskflow:nodejs /app/logs
+RUN mkdir -p logs && \
+    chown -R taskflow:nodejs logs
+
+# Cambiar ownership de archivos
+RUN chown -R taskflow:nodejs /app
 
 # Cambiar a usuario no-root
 USER taskflow
 
-# Exponer puerto de aplicación
+# Exponer puerto de API
 EXPOSE 3000
 
-# Health check optimizado para producción
+# Variables de entorno para producción
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Health check para producción
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:3000/health || exit 1
 
-# Usar dumb-init para manejar señales correctamente
-ENTRYPOINT ["dumb-init", "--"]
+# Usar tini como init system
+ENTRYPOINT ["/sbin/tini", "--"]
 
 # Comando para producción
-CMD ["node", "dist/index.js"] 
+CMD ["npm", "run", "start:prod"] 

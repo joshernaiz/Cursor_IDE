@@ -1,31 +1,119 @@
 {
   "project": {
     "name": "TaskFlow",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "description": "Aplicación de gestión de tareas con capacidades de IA",
+    "type": "full-stack",
+    "architecture": "clean-architecture"
   },
   "context": {
     "entryPoints": [
       "frontend/src/main.tsx",
-      "backend/src/server.ts"
+      "frontend/src/App.tsx",
+      "backend/src/index.ts",
+      "docker-compose.yml",
+      "docker-compose.dev.yml"
     ],
     "criticalPaths": [
       "frontend/src/components",
       "frontend/src/store",
+      "frontend/src/pages",
+      "frontend/src/router",
+      "frontend/src/services",
       "backend/src/api",
       "backend/src/services",
-      "backend/src/ai"
+      "backend/src/ai",
+      "backend/src/models",
+      "backend/src/config",
+      "docs/plan",
+      ".mcp"
+    ],
+    "configFiles": [
+      "package.json",
+      "tsconfig.json",
+      "tailwind.config.js",
+      "vite.config.ts",
+      ".env.example",
+      "docker-compose*.yml",
+      ".mcp/config.json"
     ]
+  },
+  "development": {
+    "dockerEnabled": true,
+    "services": {
+      "frontend": {
+        "container": "taskflow-frontend-dev",
+        "port": 5173,
+        "hotReload": true
+      },
+      "backend": {
+        "container": "taskflow-backend-dev", 
+        "port": 3000,
+        "debugPort": 9229
+      },
+      "database": {
+        "container": "taskflow-mongodb",
+        "port": 27017
+      }
+    }
   },
   "files": {
     "include": [
-      "**/*.{ts,tsx,js,jsx,json,md}"
+      "**/*.{ts,tsx,js,jsx,json,md,yml,yaml}",
+      "Dockerfile*",
+      ".env.example",
+      ".mcp/**"
     ],
     "exclude": [
       "**/node_modules/**",
       "**/dist/**",
       "**/.git/**",
       "**/build/**",
-      "**/.DS_Store"
+      "**/.DS_Store",
+      "**/coverage/**",
+      "**/*.log",
+      "**/tmp/**",
+      "**/temp/**"
+    ],
+    "priority": [
+      "frontend/src/**/*.{tsx,ts}",
+      "backend/src/**/*.ts",
+      "docs/**/*.md",
+      "*.yml"
     ]
+  },
+  "codeConventions": {
+    "naming": {
+      "files": "kebab-case for utilities, PascalCase for components",
+      "variables": "camelCase",
+      "components": "PascalCase",
+      "constants": "UPPER_SNAKE_CASE",
+      "interfaces": "PascalCase with I prefix"
+    },
+    "aiHints": {
+      "required": true,
+      "formats": [
+        "// AI-Hint Component: [Name] [Purpose] [Responsibilities]",
+        "// AI-Hint Flow: [Process] [Steps] [Considerations]",
+        "// AI-Hint Data: [Model] [Structure] [Validations]",
+        "// AI-Hint Security: [Aspect] [Protections] [Considerations]"
+      ]
+    },
+    "formatting": {
+      "indentation": "2 spaces",
+      "quotes": "single for JS/TS, double for JSX",
+      "semicolons": true,
+      "trailingCommas": true
+    }
+  },
+  "integrations": {
+    "mcp": {
+      "enabled": true,
+      "configPath": ".mcp/config.json"
+    },
+    "docker": {
+      "enabled": true,
+      "composeFile": "docker-compose.dev.yml"
+    }
   }
 }

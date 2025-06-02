@@ -1,0 +1,103 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Plan de Implementación - Reglas de Desarrollo
+
+## Tecnologías Estandarizadas
+- **Frontend**: React 18+, TypeScript, Tailwind CSS, Framer Motion
+- **Backend**: Node.js, Express, TypeScript, MongoDB, Zod
+- **Testing**: Jest, React Testing Library, Supertest
+- **Tools**: ESLint, Prettier, Husky, Docker, Docker Compose
+
+## Estructura de Proyecto
+```
+/src
+  /components       # Componentes React reutilizables
+  /pages           # Páginas/vistas principales
+  /hooks           # Custom hooks
+  /services        # Lógica API y comunicación
+  /store           # Redux store y slices
+  /utils           # Utilidades generales
+  /types           # Definiciones TypeScript
+/server
+  /controllers     # Controladores Express
+  /models          # Modelos Mongoose
+  /routes          # Definición de rutas
+  /middleware      # Middleware personalizado
+  /services        # Lógica de negocio
+  /utils           # Utilidades backend
+/tests             # Pruebas organizadas por tipo
+/docs             # Documentación técnica
+/.cursor          # Configuración Cursor IDE
+```
+
+## Convenciones de Código
+- **Archivos**: kebab-case.ts para utilities, PascalCase.tsx para componentes
+- **Variables/Funciones**: camelCase
+- **Componentes/Clases**: PascalCase  
+- **Constantes**: UPPER_SNAKE_CASE
+- **Formateo**: Prettier con 2 espacios, punto y coma obligatorio
+
+## Componentes Principales
+- **TaskCard**: Componente reutilizable para mostrar tareas
+- **FilterPanel**: Sistema centralizado de filtros
+- **AIWidget**: Panel de sugerencias y análisis IA
+- **AuthModule**: Gestión completa de autenticación
+- **DataTable**: Tabla genérica con paginación y ordenamiento
+
+## Flujos de Desarrollo
+### Ciclo Iterativo
+1. **Implementar módulo** → Funcionalidad básica
+2. **Probar módulo** → Unit tests + manual testing  
+3. **Verificar comportamiento** → Integration tests
+4. **Documentar AI-Hints** → Comentarios estratégicos
+5. **Actualizar docs/info** → Documentación cambios
+
+### Orden de Implementación
+1. **Setup inicial**: Estructura, dependencias, configuración
+2. **Autenticación**: Login, registro, middleware JWT
+3. **Modelos de datos**: Esquemas, validaciones, migraciones
+4. **API básica**: CRUD endpoints principales
+5. **Frontend base**: Componentes, rutas, estado
+6. **Integración**: Conectar frontend-backend
+7. **Características avanzadas**: Filtros, búsqueda, IA
+
+## Testing y Calidad
+- **Unit Tests**: 80%+ cobertura en lógica de negocio
+- **Integration Tests**: Endpoints críticos
+- **E2E Tests**: Flujos principales completos
+- **Linting**: ESLint + reglas TypeScript estrictas
+- **Pre-commit**: Husky con lint-staged
+
+## Configuración MCP (si aplica)
+```
+/.mcp
+  /servers         # Configuración servidores MCP
+  /resources       # Recursos compartidos
+  /config          # Archivos configuración
+```
+
+## Metadatos Cursor IDE
+### .cursor.json
+```json
+{
+  "rules": ["design-architecture", "implementation-structure"],
+  "composer": {
+    "include": ["src/**", "server/**", "docs/**"],
+    "exclude": ["node_modules/**", "dist/**"]
+  },
+  "features": {
+    "codeActions": true,
+    "chat": true
+  }
+}
+```
+
+## AI-Hints por Módulo
+- **Componentes React**: Propósito, props, estado, efectos
+- **API Endpoints**: Validaciones, respuestas, errores
+- **Modelos**: Esquema, relaciones, restricciones
+- **Servicios**: Lógica, dependencias, side effects
+- **Utils**: Función, parámetros, casos edge

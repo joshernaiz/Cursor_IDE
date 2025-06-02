@@ -117,34 +117,34 @@ El objetivo principal de este curso es que aprendas a estructurar tu trabajo de 
 ### 5. [Flujo de Trabajo Completo](./contenidos/05_flujo_trabajo.md)
 
 5.1. **Planificación de Proyectos**
-   - Uso del prompt Plan_Diseño
+   - Uso del prompt 1_Plan_Disenio
    - Creación de DESIGN_PLAN.md
    - Estructuración inicial
 
 5.2. **Implementación Técnica**
-   - Uso del prompt Plan_Implantación
+   - Uso del prompt 2_Plan_Implantacion
    - Creación de IMPLEMENTATION_PLAN.md
    - Decisiones arquitectónicas
 
 5.3. **Lista de Tareas Concretas**
-   - Uso del prompt TODO
+   - Uso del prompt 3_Prompt_TODO
    - Creación de TODO.md
    - Seguimiento del progreso
 
 5.4. **Ejecución del Desarrollo**
-   - Uso del prompt Ejecución_desarrollo
+   - Uso del prompt 4_Ejecucion_desarrollo
    - Implementación paso a paso
    - Pruebas y validación
 
 ### 6. [Documentación para IAs](./contenidos/06_documentacion_ias.md)
 
 6.1. **Documentación desde Cero**
-   - Uso del prompt Documentar_proyectos_desde_0
+   - Uso del prompt base/Documentar_proyectos_desde_0
    - Estructura de documentación ideal
    - Ejemplos prácticos
 
 6.2. **Actualización de Documentación**
-   - Uso del prompt Actualizar_Doc_Proyectos
+   - Uso del prompt base/Actualizar_Doc_Proyectos
    - Integración con control de versiones
    - Mantenimiento continuo
 
@@ -199,7 +199,11 @@ El objetivo principal de este curso es que aprendas a estructurar tu trabajo de 
 
 ## Recursos Adicionales
 
-- **Prompts**: Carpeta `prompts/` con todos los prompts listos para usar
+- **Prompts**: Carpeta `prompts/` reorganizada con:
+  - Prompts básicos en `prompts/base/` (AI-Hints, Cursor Rules, MCP, Documentación)
+  - Prompts numerados de flujo de trabajo: `1_Plan_Disenio.md`, `2_Plan_Implantacion.md`, `3_Prompt_TODO.md`, `4_Ejecucion_desarrollo.md`
+  - Prompt de aplicaciones piloto: `X_Generar_Piloto_Aplicacion.md`
+  - Prompts de proyecto en `prompts/proyecto/`
 - **Ejemplos**: Código de muestra para cada técnica
 - **Plantillas**: Archivos base para configuraciones comunes
 - **Referencias**: Enlaces a documentación oficial y recursos complementarios

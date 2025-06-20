@@ -1,872 +1,343 @@
 # 5. Flujo de Trabajo Completo
 
-## 5.1. Planificación de Proyectos
+## 5.1. Inicialización Automática del Proyecto
 
-La planificación efectiva es la base de cualquier proyecto exitoso. En el desarrollo con IA, esta fase adquiere aún más importancia ya que establece el marco de referencia que guiará tanto a los desarrolladores humanos como a los asistentes de IA.
+El nuevo flujo de trabajo simplificado comienza con una inicialización automática que crea toda la estructura necesaria para el desarrollo eficiente con IA. Este enfoque elimina la necesidad de múltiples prompts separados y proporciona un punto de partida consistente para cualquier proyecto.
 
-### Uso del prompt Plan_Diseño
+### Uso del script init_base_doc.sh
 
-El prompt `Plan_Diseño` está diseñado para crear un documento detallado que defina la arquitectura completa del sistema, incluyendo tanto el frontend (interfaz de usuario) como el backend (arquitectura del servidor, modelos de datos y lógica de negocio). Este documento (`DESIGN_PLAN.md`) servirá como referencia principal para el desarrollo integral del sistema.
+El script `init_base_doc.sh` automatiza la creación de la estructura base del proyecto, incluyendo directorios .cursor, archivos de configuración y la descarga del prompt genérico desde GitHub. Este enfoque garantiza consistencia y reduce el tiempo de configuración inicial.
 
 #### Proceso de ejecución:
 
-1. **Preparación**:
-   - Recopila los requisitos funcionales y técnicos del proyecto
-   - Identifica a los usuarios finales y stakeholders
-   - Define los principios arquitectónicos y de diseño que guiarán el desarrollo
-   - Evalúa las tecnologías potenciales para frontend y backend
-
-2. **Ejecución del prompt**:
-   - Proporciona los requisitos recopilados al prompt Plan_Diseño
-   - Asegúrate de personalizar las secciones marcadas con **(EDITAR)**
-   - Proporciona detalles suficientes tanto para aspectos de UI/UX como para la arquitectura técnica
-
-3. **Revisión y refinamiento**:
-   - Analiza el documento generado
-   - Asegúrate de que todas las funcionalidades clave estén representadas
-   - Verifica que la arquitectura backend sea coherente con los requisitos de frontend
-   - Refina aquellas áreas que requieran más detalle o claridad
-
-#### Elementos clave a incluir:
-
-El prompt generará un plan que contendrá:
-
-- **Resumen del proyecto**: Propósito, usuarios finales y stakeholders
-- **Arquitectura general**: Diagrama de arquitectura, componentes principales y patrones arquitectónicos
-- **Diseño Frontend**:
-  - Tipo de interfaz (web, móvil, etc.)
-  - Principios de diseño UI/UX
-  - Estructura de pantallas y componentes
-  - Consideraciones técnicas (framework, gestión de estado, etc.)
-- **Diseño Backend**:
-  - Arquitectura del servidor
-  - Modelo de datos
-  - API y comunicación
-  - Lógica de negocio
-  - Consideraciones técnicas (framework, testing, etc.)
-- **Flujos completos**: Diagramas de secuencia que muestran interacciones frontend-backend
-- **Consideraciones transversales**: Seguridad, escalabilidad, accesibilidad, etc.
-- **Ejemplos ilustrativos**: Maquetas, ejemplos de API, esquemas de datos, etc.
-
-### Creación de DESIGN_PLAN.md
-
-El documento `DESIGN_PLAN.md` no es solo una especificación técnica, sino una guía comprensiva que comunica cómo funcionará el sistema completo, desde la interfaz de usuario hasta la persistencia de datos.
-
-#### Estructura recomendada:
-
-```markdown
-# Plan de Diseño de Proyecto - [Nombre del Proyecto]
-
-## 1. Resumen del Proyecto
-[Descripción del propósito, usuarios finales, stakeholders y objetivos principales]
-
-## 2. Arquitectura General
-[Diagrama de arquitectura usando Mermaid]
-
-[Descripción de componentes principales y patrones arquitectónicos]
-
-[Tecnologías principales para frontend y backend]
-
-## 3. Diseño Frontend
-
-### 3.1 Tipo de interfaz
-[Web/Móvil/Desktop con justificación]
-
-### 3.2 Principios de diseño UI/UX
-[Lista de principios con breves explicaciones]
-
-### 3.3 Estructura de pantallas
-[Descripción de navegación y pantallas principales]
-
-### 3.4 Consideraciones técnicas frontend
-[Framework, gestión de estado, enrutamiento, etc.]
-
-## 4. Diseño Backend
-
-### 4.1 Arquitectura del servidor
-[Patrón arquitectónico y descripción de capas]
-
-### 4.2 Modelo de datos
-[Diagrama de entidades usando Mermaid]
-
-[Descripción de entidades y relaciones principales]
-
-### 4.3 API y comunicación
-[Estructura de endpoints/recursos]
-
-[Autenticación y manejo de errores]
-
-### 4.4 Lógica de negocio
-[Servicios principales y flujos de trabajo]
-
-## 5. Flujos de usuario completos
-### Flujo 1: [Nombre]
-```mermaid
-sequenceDiagram
-    participant Usuario
-    participant Frontend
-    participant API
-    participant ServicioBackend
-    participant BaseDatos
-    
-    Usuario->>Frontend: Acción
-    Frontend->>API: Petición
-    API->>ServicioBackend: Procesar
-    ServicioBackend->>BaseDatos: Consulta/Modificación
-    BaseDatos-->>ServicioBackend: Resultado
-    ServicioBackend-->>API: Respuesta
-    API-->>Frontend: Datos
-    Frontend-->>Usuario: Feedback visual
-```
-[Descripción detallada del flujo]
-
-## 6. Consideraciones transversales
-[Seguridad, escalabilidad, accesibilidad, etc.]
-
-## 7. Ejemplos ilustrativos
-[Maquetas, ejemplos de API, esquemas de datos, etc.]
-
-## 8. AI-Hints para el diseño
-[Comentarios específicos para los modelos de IA]
-```
-
-#### Consejos para un DESIGN_PLAN.md efectivo:
-
-1. **Sé específico**: Evita generalidades y proporciona detalles concretos.
-2. **Equilibra frontend y backend**: Da igual importancia a ambos aspectos del sistema.
-3. **Usa diagramas**: Aprovecha Mermaid para arquitectura, flujos y modelos de datos.
-4. **Enfócate en conexiones**: Explica claramente cómo se relacionan frontend y backend.
-5. **Incluye ejemplos completos**: Proporciona ejemplos que muestren tanto UI como API y datos.
-6. **Considera flujos end-to-end**: Documenta flujos completos desde usuario hasta base de datos.
-
-#### Integración con IA:
-
-Este documento sirve como referencia vital para la IA, permitiendo:
-- Generar código que se adhiera a la arquitectura definida
-- Mantener consistencia entre frontend y backend
-- Comprender el contexto completo del sistema
-- Detectar inconsistencias o problemas potenciales
-- Sugerir mejoras alineadas con la arquitectura global
-
-### Ejemplos prácticos
-
-**Ejemplo de arquitectura general:**
-```markdown
-## 2. Arquitectura General
-
-```mermaid
-graph TD
-    subgraph Cliente
-        UI[Interfaz de Usuario]
-        StateM[Gestión de Estado]
-        UIUtils[Utilidades UI]
-    end
-    
-    subgraph Servidor
-        API[API Gateway]
-        Auth[Servicio Autenticación]
-        Projects[Servicio Proyectos]
-        Tasks[Servicio Tareas]
-        Analytics[Servicio Analíticas]
-    end
-    
-    subgraph Persistencia
-        SQL[(Base de datos SQL)]
-        Cache[(Redis Cache)]
-        Storage[(Almacenamiento Archivos)]
-    end
-    
-    UI --> API
-    API --> Auth
-    API --> Projects
-    API --> Tasks
-    API --> Analytics
-    
-    Auth --> SQL
-    Projects --> SQL
-    Tasks --> SQL
-    Analytics --> SQL
-    
-    Auth --> Cache
-    Tasks --> Cache
-    Analytics --> Storage
-```
-
-TaskFlow implementará una arquitectura cliente-servidor con un frontend SPA y un backend basado en servicios. El frontend utilizará React con una arquitectura basada en componentes y hooks, mientras que el backend seguirá un diseño modular con servicios específicos para cada dominio principal.
-
-### Tecnologías principales
-
-**Frontend:**
-- React 18
-- TypeScript
-- Redux Toolkit para gestión de estado
-- React Router para navegación
-- Material-UI para componentes de interfaz
-
-**Backend:**
-- Node.js con Express
-- TypeScript
-- MongoDB con Mongoose
-- JWT para autenticación
-- Redis para caché
-```
-
-**Ejemplo de diseño frontend:**
-```markdown
-## 3. Diseño Frontend
-
-### 3.1 Tipo de interfaz
-
-TaskFlow implementará una interfaz web progresiva (PWA) compatible con escritorio y dispositivos móviles, con diseño responsivo y capacidades offline.
-
-### 3.2 Principios de diseño UI/UX
-
-- **Consistencia**: Elementos visuales uniformes en toda la aplicación.
-- **Feedback inmediato**: Respuesta visual para cada acción del usuario.
-- **Eficiencia**: Minimizar pasos para tareas frecuentes.
-- **Jerarquía visual**: Organización intuitiva de información por importancia.
-- **Accesibilidad**: Conformidad con WCAG 2.1 nivel AA.
-
-### 3.3 Estructura de pantallas
-
-#### Dashboard principal
-- Barra superior: Logo, búsqueda global, notificaciones, perfil usuario
-- Panel lateral: Navegación principal, filtros rápidos, modo oscuro toggle
-- Área central: Widgets configurables con data cards
-- Acciones principales: Botón "+" flotante para creación rápida
-
-#### Detalle de Proyecto
-- Cabecera: Título, estado, progreso, fechas clave
-- Pestañas: Resumen, Tareas, Miembros, Documentos, Configuración
-- Panel de actividad: Timeline de eventos recientes
-- Panel lateral: Metadata y acciones rápidas
-
-### 3.4 Consideraciones técnicas frontend
-
-- **Framework**: React con TypeScript para tipo seguro
-- **Gestión de estado**: Redux Toolkit para estado global, Context API para estado local
-- **Enrutamiento**: React Router v6 con rutas protegidas
-- **Formularios**: React Hook Form con validación Yup
-- **Optimización**: Code splitting por rutas, lazy loading para componentes pesados
-```
-
-**Ejemplo de diseño backend:**
-```markdown
-## 4. Diseño Backend
-
-### 4.1 Arquitectura del servidor
-
-TaskFlow implementará una arquitectura modular siguiendo principios Clean Architecture:
-
-- **Capa de presentación**: Controladores API Express
-- **Capa de aplicación**: Servicios que implementan lógica de negocio
-- **Capa de dominio**: Entidades y reglas de negocio
-- **Capa de infraestructura**: Repositorios, adaptadores externos
-
-### 4.2 Modelo de datos
-
-```mermaid
-erDiagram
-    USER {
-        string id PK
-        string email
-        string name
-        string passwordHash
-        string role
-        date createdAt
-    }
-    
-    PROJECT {
-        string id PK
-        string name
-        string description
-        string status
-        date startDate
-        date endDate
-        date createdAt
-    }
-    
-    TASK {
-        string id PK
-        string title
-        string description
-        string status
-        int priority
-        date dueDate
-        date completedAt
-        date createdAt
-    }
-    
-    TAG {
-        string id PK
-        string name
-        string color
-    }
-    
-    USER ||--o{ PROJECT : creates
-    USER ||--o{ TASK : assigned
-    PROJECT ||--o{ TASK : contains
-    TASK ||--o{ TAG : tagged
-```
-
-### 4.3 API y comunicación
-
-#### Autenticación
-- `POST /api/auth/register`: Registro de usuarios
-- `POST /api/auth/login`: Inicio de sesión con JWT
-- `POST /api/auth/refresh`: Renovación de token
-
-#### Proyectos
-- `GET /api/projects`: Listado paginado de proyectos
-- `POST /api/projects`: Creación de nuevo proyecto
-- `GET /api/projects/:id`: Detalle de proyecto específico
-- `PUT /api/projects/:id`: Actualización completa de proyecto
-
-#### Tareas
-- `GET /api/tasks`: Listado de tareas con filtros
-- `POST /api/tasks`: Creación de tarea
-- `PATCH /api/tasks/:id/status`: Cambio de estado de tarea
-
-#### Formato de respuestas
-
-Todas las respuestas seguirán un formato estándar:
-
-```json
-{
-  "success": true,
-  "data": { /* Datos específicos */ },
-  "meta": { /* Metadatos: paginación, etc. */ }
-}
-```
-
-### 4.4 Lógica de negocio
-
-#### Servicios principales:
-- **AuthService**: Gestión de autenticación y permisos
-- **ProjectService**: CRUD y reglas de negocio para proyectos
-- **TaskService**: Gestión de tareas, asignaciones y estados
-- **NotificationService**: Envío de notificaciones a usuarios
-- **AnalyticsService**: Cálculo de métricas y estadísticas
-```
-
-**Ejemplo de flujo completo:**
-```markdown
-## 5. Flujos de usuario completos
-
-### Flujo: Creación y asignación de tarea
-
-```mermaid
-sequenceDiagram
-    participant Usuario
-    participant UI as Interfaz Usuario
-    participant API as API Gateway
-    participant TaskSvc as Servicio Tareas
-    participant NotifSvc as Servicio Notificaciones
-    participant DB as Base de Datos
-    
-    Usuario->>UI: Completa formulario de tarea
-    UI->>UI: Valida formulario
-    UI->>API: POST /api/tasks
-    API->>TaskSvc: createTask(data)
-    TaskSvc->>TaskSvc: Aplica reglas de negocio
-    TaskSvc->>DB: INSERT task
-    DB-->>TaskSvc: Confirma creación
-    TaskSvc->>NotifSvc: notifyAssignees(taskId)
-    NotifSvc->>DB: Guarda notificaciones
-    NotifSvc-->>TaskSvc: Confirmación
-    TaskSvc-->>API: Retorna tarea creada
-    API-->>UI: Respuesta JSON
-    UI-->>Usuario: Muestra confirmación
-    UI->>UI: Actualiza lista de tareas
-```
-
-**Descripción detallada:**
-
-1. El usuario accede al formulario de nueva tarea desde el dashboard o la vista de proyecto
-2. Completa los campos: título, descripción, prioridad, fecha límite y asignados
-3. La interfaz valida los datos en tiempo real (cliente)
-4. Al enviar, la UI hace una petición POST al endpoint /api/tasks
-5. El API Gateway recibe la petición y la redirige al servicio de tareas
-6. El servicio aplica validaciones de negocio (permisos, restricciones)
-7. Se crea el registro en la base de datos
-8. Se notifica a los usuarios asignados
-9. La respuesta regresa a través de la API hasta la UI
-10. La interfaz muestra confirmación y actualiza la lista de tareas
-```
-
-## 5.2. Implementación Técnica
-
-Una vez definida la interfaz, el siguiente paso es crear un plan detallado de implementación técnica que traduzca los requisitos funcionales en una estrategia clara de desarrollo.
-
-### Uso del prompt Plan_Implantación
-
-El prompt `Plan_Implantación` está diseñado para generar un documento técnico (`IMPLEMENTATION_PLAN.md`) que describe cómo se implementará el proyecto desde una perspectiva de arquitectura y desarrollo.
+1. **Preparación del entorno**:
+   - Navega hasta el directorio raíz de tu proyecto
+   - Asegúrate de tener permisos de escritura en el directorio
+   - Verifica que tengas `curl` o `wget` disponible para descargas
+   - Opcional: Inicializa un repositorio git si aún no existe
+
+2. **Ejecución del script**:
+   ```bash
+   # Descargar el script (si no lo tienes localmente)
+   curl -O https://raw.githubusercontent.com/joshernaiz/Cursor_IDE/main/prompts/base/scripts/init_base_doc.sh
+   
+   # Dar permisos de ejecución
+   chmod +x init_base_doc.sh
+   
+   # Ejecutar el script
+   ./init_base_doc.sh
+   ```
+
+3. **Verificación de resultados**:
+   - Revisa la estructura de directorios creada
+   - Confirma que el prompt genérico se descargó correctamente
+   - Verifica que todos los archivos template están en su lugar
+
+#### Estructura creada por el script:
+
+El script automáticamente genera:
+
+- **Directorio .cursor/**:
+  - `rules/base.mdc` - Reglas de optimización de memoria y contexto
+  - `rules/task_execution.mdc` - Metodología para ejecutar tareas TODO
+  - `rules/documentation_access.mdc` - Estrategias de acceso a documentación
+  - `memory/long_memory/` - Archivos de memoria permanente para la IA
+
+- **Directorio docs/**:
+  - `base_prompt/base_prompt.md` - Prompt genérico descargado desde GitHub
+  - Estructura preparada para documentación del proyecto
+
+- **Archivos de memoria permanente**:
+  - `project_brief.md` - Resumen ejecutivo del proyecto
+  - `architecture.md` - Documentación de arquitectura del sistema
+  - `decisions.md` - Registro de decisiones arquitectónicas y técnicas  
+  - `patterns.md` - Patrones de código y convenciones de desarrollo
+
+### Beneficios de la inicialización automática
+
+La inicialización automática mediante el script proporciona múltiples ventajas:
+
+1. **Consistencia**: Todos los proyectos inician con la misma estructura base
+2. **Eficiencia**: Se reduce el tiempo de configuración inicial de horas a minutos
+3. **Actualización automática**: El prompt genérico siempre se descarga en su versión más reciente
+4. **Flexibilidad**: La estructura base es adaptable a cualquier tipo de proyecto
+
+## 5.2. Generación de Estructura Personalizada
+
+Una vez inicializada la estructura base, el siguiente paso es personalizar todo el contenido según las necesidades específicas del proyecto utilizando el prompt genérico descargado automáticamente.
+
+### Uso del prompt genérico base_prompt.md
+
+El archivo `docs/base_prompt/base_prompt.md` descargado contiene un prompt integral que genera automáticamente toda la estructura .cursor personalizada para cualquier proyecto, incluyendo reglas de comportamiento, memoria de contexto y lista de tareas ejecutables.
 
 #### Proceso de ejecución:
 
-1. **Preparación**:
-   - Recopila información sobre requisitos técnicos
-   - Define las restricciones tecnológicas (lenguajes, frameworks, etc.)
-   - Identifica los principios arquitectónicos a seguir
+1. **Preparación de requisitos del proyecto**:
+   - Define claramente qué tipo de proyecto vas a desarrollar
+   - Identifica el stack tecnológico que utilizarás
+   - Recopila los requisitos funcionales principales
+   - Establece las restricciones y consideraciones especiales
 
-2. **Ejecución del prompt**:
-   - Proporciona los objetivos, requisitos y principios al prompt
-   - Personaliza las secciones marcadas con **(EDITAR)**
-   - Incluye información sobre tecnologías preferidas
+2. **Uso del prompt genérico**:
+   - Copia el contenido completo de `docs/base_prompt/base_prompt.md`
+   - Al final del prompt, agrega los requisitos específicos de tu proyecto
+   - Ejecuta el prompt completo en Cursor
+   - La IA generará automáticamente todos los archivos personalizados
 
-3. **Revisión y refinamiento**:
-   - Valida que la arquitectura propuesta sea viable
-   - Confirma que cubre todos los requisitos funcionales
-   - Ajusta detalles específicos según necesidades del proyecto
+3. **Aplicación de resultados**:
+   - Copia cada archivo generado a su ubicación correspondiente
+   - Verifica que todo el contenido esté personalizado para tu proyecto
+   - Ajusta detalles específicos si es necesario
 
-#### Elementos clave a incluir:
+#### Elementos que genera automáticamente:
 
-El prompt generará un plan que contendrá:
+El prompt genérico produce una estructura completa que incluye:
 
-- **Resumen del Proyecto**: Descripción funcional y público objetivo
-- **Tecnologías y herramientas**: Stack tecnológico completo
-- **Principios y convenciones**: SOLID, DRY, estilos de codificación
-- **Estructura de carpetas**: Organización lógica del proyecto
-- **Componentes y módulos**: Responsabilidades e interacciones
-- **Diseño de flujos**: Secuencias de operaciones para procesos clave
-- **Plan de fases**: División lógica del trabajo
-- **Pruebas y calidad**: Estrategia de testing
-- **Despliegue**: Configuración de entornos
+- **8 archivos .cursor personalizados**:
+  - 3 archivos de reglas (base.mdc, task_execution.mdc, documentation_access.mdc)
+  - 4 archivos de memoria permanente (project_brief.md, architecture.md, decisions.md, patterns.md)
+  - 1 archivo TODO.md con lista ejecutable de tareas
 
-### Creación de IMPLEMENTATION_PLAN.md
+- **Contenido específico del proyecto**:
+  - Tecnologías y stack tecnológico definidos
+  - Patrones de código usando los lenguajes del proyecto
+  - Decisiones arquitectónicas relevantes
+  - Convenciones de desarrollo apropiadas
+  - AI-Hints estratégicos para el contexto del proyecto
 
-El documento `IMPLEMENTATION_PLAN.md` proporciona un mapa detallado para la implementación técnica, sirviendo como guía tanto para desarrolladores humanos como para la IA.
+## 5.3. Ejecución Estructurada de Tareas
 
-#### Estructura recomendada:
+Con la estructura .cursor personalizada en su lugar, el desarrollo se vuelve altamente eficiente siguiendo la metodología definida en las reglas generadas automáticamente.
 
-```markdown
-# Plan de Implementación - [Nombre del Proyecto]
+### Uso del archivo TODO.md generado
 
-## Resumen del Proyecto
-[Descripción funcional, propósito y casos de uso principales]
-
-## Tecnologías y herramientas
-### Frontend
-- [Tecnología 1]: [Versión] - [Justificación]
-- [Tecnología 2]: [Versión] - [Justificación]
-...
-
-### Backend
-- [Tecnología 1]: [Versión] - [Justificación]
-- [Tecnología 2]: [Versión] - [Justificación]
-...
-
-### DevOps/Herramientas
-- [Tecnología 1]: [Versión] - [Justificación]
-- [Tecnología 2]: [Versión] - [Justificación]
-...
-
-## Principios y convenciones
-[Descripción de principios arquitectónicos y convenciones de código]
-
-## Estructura de carpetas/proyecto
-```
-[Estructura en ASCII o tabla]
-```
-
-[Descripción del propósito de cada directorio principal]
-
-## Componentes y módulos principales
-[Tabla o diagrama de componentes con responsabilidades]
-
-### Diagrama de relaciones de componentes
-```mermaid
-graph TD
-    A[Componente A] --> B[Componente B]
-    A --> C[Componente C]
-    B --> D[Componente D]
-    C --> D
-```
-
-## Diseño de flujos y responsabilidades
-### Flujo 1: [Nombre]
-```mermaid
-sequenceDiagram
-    participant Cliente
-    participant API
-    participant Servicio
-    participant Base de Datos
-    
-    Cliente->>API: Solicitud
-    API->>Servicio: Procesar
-    Servicio->>Base de Datos: Consultar
-    Base de Datos-->>Servicio: Resultado
-    Servicio-->>API: Respuesta
-    API-->>Cliente: Respuesta final
-```
-
-[Descripción detallada del flujo]
-
-## Plan de fases o sprints
-[División en fases lógicas con dependencias y entregables]
-
-## Pruebas y calidad
-[Estrategia de testing, herramientas y métricas]
-
-## Despliegue y entornos
-[Configuración de entornos y proceso de despliegue]
-```
-
-#### Consejos para un IMPLEMENTATION_PLAN.md efectivo:
-
-1. **Justifica decisiones**: Explica por qué se eligió cada tecnología o patrón.
-2. **Usa diagramas**: Visualiza arquitectura y flujos para mayor claridad.
-3. **Define límites claros**: Establece responsabilidades claras para cada componente.
-4. **Especifica convenciones**: Detalla estándares de código y nomenclatura.
-5. **Define secuencialmente**: Organiza el plan en fases lógicas que se construyen iterativamente.
-6. **Documenta puntos de integración**: Especifica cómo se comunican los diferentes componentes.
-
-#### Integración con IA:
-
-Este documento permite a la IA:
-- Generar código con la estructura correcta
-- Seguir los patrones arquitectónicos definidos
-- Comprender el contexto técnico completo
-- Proponer soluciones alineadas con la arquitectura
-- Detectar desviaciones respecto al plan
-
-### Ejemplos prácticos
-
-**Ejemplo de arquitectura y componentes:**
-```markdown
-## Componentes y módulos principales
-
-### Frontend
-
-| Componente | Responsabilidad | Dependencias |
-|------------|-----------------|--------------|
-| **AuthModule** | Gestión de autenticación y permisos | API Auth, StoreModule |
-| **UserModule** | Administración de perfiles y preferencias | API Users, StoreModule |
-| **ProjectModule** | Gestión completa de proyectos | API Projects, StoreModule |
-| **DashboardModule** | Visualización de datos y métricas | API Analytics, ChartComponents |
-| **SharedModule** | Componentes y utilidades comunes | - |
-
-### Backend
-
-| Componente | Responsabilidad | Dependencias |
-|------------|-----------------|--------------|
-| **AuthService** | Autenticación, autorización y tokens | UserRepository, JWTService |
-| **UserService** | Gestión de usuarios y perfiles | UserRepository, StorageService |
-| **ProjectService** | Lógica de negocio para proyectos | ProjectRepository, UserService |
-| **NotificationService** | Gestión y envío de notificaciones | EmailService, PushService |
-| **AnalyticsService** | Recopilación y procesamiento de métricas | TimeSeriesDB, ProjectService |
-```
-
-**Ejemplo de flujo de operaciones:**
-```markdown
-## Diseño de flujos y responsabilidades
-
-### Flujo: Creación y asignación de tarea
-
-```mermaid
-sequenceDiagram
-    participant Usuario
-    participant TaskComponent
-    participant TaskService
-    participant ProjectService
-    participant NotificationService
-    participant Database
-    
-    Usuario->>TaskComponent: Crear nueva tarea
-    TaskComponent->>TaskService: createTask(data)
-    TaskService->>ProjectService: validateProjectAccess(projectId, userId)
-    ProjectService-->>TaskService: accessGranted
-    TaskService->>Database: saveTask(task)
-    Database-->>TaskService: taskId
-    TaskService->>NotificationService: notifyAssignees(task)
-    NotificationService-->>Usuario: notificationSent
-    TaskService-->>TaskComponent: taskCreated
-    TaskComponent-->>Usuario: Confirmación visual
-```
-
-1. El usuario completa el formulario de nueva tarea y lo envía
-2. El componente valida los datos del formulario localmente
-3. Se envía la solicitud al TaskService en el backend
-4. Se verifica que el usuario tenga permisos en el proyecto
-5. Se guarda la tarea en la base de datos
-6. Se notifica a los usuarios asignados
-7. Se devuelve confirmación al frontend
-8. Se muestra confirmación visual y se actualiza la lista de tareas
-
-**Consideraciones especiales:**
-- Se implementa validación tanto en cliente como en servidor
-- Las notificaciones son asíncronas para no bloquear el flujo principal
-- Los errores en cualquier paso deben revertir la operación completa
-```
-
-## 5.3. Lista de Tareas Concretas
-
-Después de establecer los planes de interfaz e implementación, el siguiente paso es crear una lista detallada de tareas que guíen el desarrollo día a día.
-
-### Uso del prompt TODO
-
-El prompt `TODO` está diseñado para generar un archivo `TODO.md` con tareas específicas, accionables y organizadas lógicamente, basadas en los documentos de planificación previos.
+El archivo `docs/TODO.md` generado automáticamente contiene una lista completa de tareas específicas, atómicas y organizadas según la arquitectura y tecnologías de tu proyecto específico.
 
 #### Proceso de ejecución:
 
-1. **Preparación**:
-   - Asegúrate de tener listos `DESIGN_PLAN.md` e `IMPLEMENTATION_PLAN.md`
-   - Identifica prioridades y dependencias entre tareas
-   - Define el nivel de granularidad deseado para las tareas
+1. **Metodología establecida automáticamente**:
+   - Las reglas en `.cursor/rules/task_execution.mdc` definen la metodología
+   - Formato estándar: `Ejecutar tarea: {{TASK}} del archivo {{FILEMD}}`
+   - Ejemplo: `Ejecutar tarea: 2.3 del archivo TODO.md`
 
-2. **Ejecución del prompt**:
-   - Proporciona los documentos de planificación al prompt TODO
-   - Personaliza las instrucciones específicas si es necesario
-   - Indica si hay restricciones particulares (tiempo, recursos, etc.)
+2. **Ejecución paso a paso**:
+   - La IA sigue automáticamente el proceso de 4 fases:
+     - **Análisis inicial**: Lee el TODO.md y analiza la tarea específica
+     - **Planificación**: Divide en subtareas y define criterios de éxito
+     - **Implementación**: Genera código con AI-Hints obligatorios
+     - **Documentación**: Actualiza `docs/info/` y marca como completado
 
-3. **Revisión y refinamiento**:
-   - Verifica que las tareas sean lo suficientemente específicas
-   - Confirma que el orden propuesto es lógico y respeta dependencias
-   - Ajusta prioridades según necesidades del proyecto
+3. **Seguimiento automático**:
+   - Cada tarea genera documentación en `docs/info/`
+   - Se actualiza automáticamente el índice maestro `docs/info/index.md`
+   - Se marcan subtareas como completadas en el TODO.md
 
-#### Elementos clave a incluir:
+#### Características del TODO.md generado:
 
-El prompt generará una lista que contendrá:
+El archivo TODO.md creado automáticamente incluye:
 
-- **Tareas específicas y atómicas**: Acciones concretas y verificables
-- **Agrupación lógica**: Organización por componentes o funcionalidades
-- **Secuencia clara**: Orden que respeta dependencias técnicas
-- **Formato de checklist**: Facilita seguimiento del progreso
-- **Balance entre detalle y mantenibilidad**: Suficiente detalle sin excesiva complejidad
+- **Tareas específicas y atómicas**: Cada tarea es concreta, verificable y completable en 1-2 horas
+- **Organización por módulos**: Agrupadas según la arquitectura específica del proyecto
+- **Secuencia lógica**: Orden que respeta dependencias técnicas del stack elegido
+- **Formato de checklist**: Facilita seguimiento visual del progreso
+- **Integración con documentación**: Cada tarea incluye actualización automática de `docs/info/`
+- **AI-Hints obligatorios**: Todas las tareas de implementación incluyen generación de AI-Hints
 
-### Creación de TODO.md
+## 5.4. Mantenimiento y Evolución
 
-El documento `TODO.md` sirve como hoja de ruta detallada para el desarrollo, proporcionando una secuencia clara de pasos a seguir.
+Una vez implementado el sistema básico, el flujo de trabajo se enfoca en el mantenimiento continuo y la evolución del proyecto, aprovechando la estructura .cursor establecida.
 
-#### Estructura recomendada:
+### Evolución continua del sistema
 
-```markdown
-# Lista de Tareas - [Nombre del Proyecto]
+El sistema .cursor generado está diseñado para evolucionar junto con el proyecto, manteniendo siempre la eficiencia en el desarrollo con IA.
 
-## 1. [Fase/Componente 1]
+#### Áreas de evolución continua:
 
-### 1.1 [Subfase/Subcomponente 1.1]
-- [ ] Tarea 1.1.1: [Descripción específica]
-- [ ] Tarea 1.1.2: [Descripción específica]
-- [ ] Tarea 1.1.3: [Descripción específica]
+1. **Actualización de documentación**:
+   - Mantener actualizada la información en `docs/info/`
+   - Refinar el índice maestro conforme crece la documentación
+   - Añadir nuevas categorías de documentación según necesidades
 
-### 1.2 [Subfase/Subcomponente 1.2]
-- [ ] Tarea 1.2.1: [Descripción específica]
-- [ ] Tarea 1.2.2: [Descripción específica]
+2. **Refinamiento de AI-Hints**:
+   - Mejorar AI-Hints basándose en la experiencia de uso
+   - Añadir contexto adicional donde la IA necesite más información
+   - Actualizar AI-Hints cuando cambie la arquitectura o funcionalidad
 
-## 2. [Fase/Componente 2]
+3. **Optimización de reglas .cursor**:
+   - Ajustar reglas de memoria basándose en patrones de uso reales
+   - Añadir nuevas reglas específicas que emerjan durante el desarrollo
+   - Optimizar la eficiencia de acceso a documentación
 
-### 2.1 [Subfase/Subcomponente 2.1]
-- [ ] Tarea 2.1.1: [Descripción específica]
-- [ ] Tarea 2.1.2: [Descripción específica]
-...
+#### Beneficios del flujo simplificado:
+
+Este nuevo enfoque proporciona ventajas significativas:
+
+1. **Eficiencia mejorada**:
+   - Un solo script crea toda la estructura base
+   - Un solo prompt genera toda la personalización
+   - Eliminación de múltiples pasos manuales
+
+2. **Consistencia garantizada**:
+   - Estructura estándar para todos los proyectos
+   - Metodología uniforme de desarrollo
+   - Patrones de AI-Hints consistentes
+
+3. **Escalabilidad del sistema**:
+   - Fácil adaptación a proyectos de cualquier tamaño
+   - Estructura evolutiva que crece con el proyecto
+   - Reutilización de patrones exitosos
+
+4. **Reducción de errores**:
+   - Menos pasos manuales significa menos oportunidades de error
+   - Estructura pre-validada y probada
+   - Documentación automáticamente consistente
+
+### Flujo de trabajo diario simplificado
+
+Una vez establecida la estructura .cursor, el trabajo diario sigue un flujo altamente optimizado y predecible.
+
+#### Ciclo de desarrollo diario:
+
+1. **Identificar siguiente tarea**:
+   - Revisar `docs/TODO.md` para la siguiente tarea pendiente
+   - Verificar que las dependencias estén completadas
+   - Entender el contexto específico de la tarea
+
+2. **Ejecutar tarea con metodología establecida**:
+   ```
+   Ejecutar tarea: [NÚMERO] del archivo TODO.md
+   ```
+   - La IA automáticamente sigue la metodología definida en `.cursor/rules/`
+   - Genera código con AI-Hints obligatorios
+   - Documenta automáticamente en `docs/info/`
+
+3. **Validación automática**:
+   - El proceso incluye pruebas automáticas según las reglas establecidas
+   - Se actualizan los archivos de memoria permanente si es necesario
+   - Se marca la tarea como completada en el TODO.md
+
+4. **Evolución continua**:
+   - La estructura .cursor se refina basándose en el uso real
+   - Los AI-Hints mejoran la eficiencia en sesiones futuras
+   - La documentación crece orgánicamente con el proyecto
+
+#### Prácticas recomendadas para maximizar eficiencia:
+
+1. **Seguir la metodología establecida**:
+   - Usar siempre el formato: `Ejecutar tarea: X.Y del archivo TODO.md`
+   - Confiar en las reglas .cursor generadas automáticamente
+   - Permitir que la IA siga el proceso de 4 fases definido
+
+2. **Mantener AI-Hints actualizados**:
+   - Los AI-Hints se generan automáticamente con el formato estándar
+   - Actualizar cuando la funcionalidad o arquitectura cambie
+   - Añadir contexto adicional donde sea necesario
+
+3. **Documentación incremental**:
+   - Cada tarea automáticamente actualiza `docs/info/`
+   - Revisar periódicamente el índice maestro
+   - Mantener las categorías organizadas y relevantes
+
+4. **Evolución basada en uso real**:
+   - Refinar reglas .cursor basándose en la experiencia
+   - Ajustar patrones de memoria según necesidades reales
+   - Optimizar el flujo conforme el proyecto crece
+
+### Ejemplos prácticos del nuevo flujo
+
+#### Ejemplo completo: De script inicial a implementación
+
+**Paso 1: Inicialización automática**
+
+```bash
+# Clonar o crear directorio del proyecto
+mkdir mi-nuevo-proyecto && cd mi-nuevo-proyecto
+
+# Ejecutar script de inicialización
+curl -O https://raw.githubusercontent.com/joshernaiz/Cursor_IDE/main/prompts/base/scripts/init_base_doc.sh
+chmod +x init_base_doc.sh
+./init_base_doc.sh
+
+# Resultado: Estructura completa creada automáticamente
 ```
 
-#### Consejos para un TODO.md efectivo:
+**Paso 2: Personalización con prompt genérico**
 
-1. **Granularidad adecuada**: Tareas que puedan completarse en unas pocas horas
-2. **Especificidad**: Descripciones claras que indiquen exactamente qué hacer
-3. **Secuencia lógica**: Ordenar tareas respetando dependencias técnicas
-4. **Incluir verificación**: Añadir tareas de prueba después de cada implementación
-5. **Actualizar regularmente**: Revisar y ajustar la lista a medida que avanza el proyecto
-6. **Balancear completitud y flexibilidad**: Suficiente detalle sin sobreplanificar
-
-#### Integración con IA:
-
-Este documento ayuda a la IA a:
-- Comprender el contexto inmediato de desarrollo
-- Generar código que se alinee con la tarea actual
-- Reconocer dependencias entre componentes
-- Sugerir pruebas apropiadas para cada implementación
-
-### Ejemplos prácticos
-
-**Ejemplo de tareas para backend:**
 ```markdown
-## 2. Implementación de Autenticación
+[Copiar contenido completo de docs/base_prompt/base_prompt.md y añadir al final:]
 
-### 2.1 Backend - Modelos y servicios
-- [ ] Crear modelo de Usuario con Mongoose
-  ```javascript
-  // Estructura esperada:
-  const UserSchema = new Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    name: String,
-    role: { type: String, enum: ['user', 'admin'], default: 'user' },
-    createdAt: { type: Date, default: Date.now }
-  });
-  ```
-- [ ] Implementar servicio de hash y verificación de contraseñas
-- [ ] Desarrollar servicio de generación de JWT
-- [ ] Crear middleware de autenticación
-- [ ] Añadir AI-Hints para el servicio de autenticación
+## INFORMACIÓN DEL PROYECTO A PROCESAR
 
-### 2.2 Backend - Endpoints API
-- [ ] Implementar endpoint de registro (POST /api/auth/register)
-- [ ] Implementar endpoint de login (POST /api/auth/login)
-- [ ] Implementar endpoint de refresh token (POST /api/auth/refresh)
-- [ ] Crear pruebas para los endpoints de autenticación
-  - [ ] Prueba: registro exitoso
-  - [ ] Prueba: registro con email duplicado
-  - [ ] Prueba: login exitoso
-  - [ ] Prueba: login con credenciales incorrectas
+**Proyecto**: API de Gestión de Inventarios
+**Stack**: Node.js + Express + MongoDB + React
+**Funcionalidades principales**:
+- Gestión de productos (CRUD)
+- Control de stock y alertas
+- Dashboard de reportes
+- Autenticación JWT
+- API REST con documentación OpenAPI
+
+**Arquitectura**: Microservicios con API Gateway
+**Usuarios**: Administradores de almacén y gerentes
+**Restricciones**: Debe ser escalable y soportar 1000+ productos
 ```
 
-**Ejemplo de tareas para frontend:**
+**Resultado**: 8 archivos .cursor personalizados generados automáticamente
+
+**Paso 3: Desarrollo siguiendo el TODO.md generado**
+
 ```markdown
-## 3. Implementación de Dashboard
+# En Cursor IDE, simplemente escribir:
+Ejecutar tarea: 1.1 del archivo TODO.md
 
-### 3.1 Componentes principales
-- [ ] Crear estructura base del Dashboard
-  - Barra lateral
-  - Área de contenido principal
-  - Barra superior
-- [ ] Implementar navegación principal
-  - [ ] Lista de secciones disponibles
-  - [ ] Indicador de sección activa
-  - [ ] Manejo de permisos por rol
-- [ ] Desarrollar componente de perfil resumido
-  - [ ] Avatar de usuario
-  - [ ] Menú desplegable con opciones
-
-### 3.2 Widgets del Dashboard
-- [ ] Implementar widget de tareas pendientes
-  - [ ] Conexión con API de tareas
-  - [ ] Vista de lista con acciones rápidas
-  - [ ] Filtrado básico
-- [ ] Implementar widget de actividad reciente
-  - [ ] Conexión con API de actividad
-  - [ ] Formato de timeline con acciones
-  - [ ] Paginación "cargar más"
-- [ ] Crear widget de métricas principales
-  - [ ] Gráficos de progreso
-  - [ ] Indicadores numéricos
-  - [ ] Tooltips informativos
+# La IA automáticamente:
+# 1. Lee el TODO.md y analiza la tarea 1.1
+# 2. Planifica subtareas específicas
+# 3. Implementa con AI-Hints automáticos
+# 4. Documenta en docs/info/ y actualiza índice
+# 5. Marca como completado en TODO.md
 ```
 
-## 5.4. Ejecución del Desarrollo
+#### Comparación: Antes vs Ahora
 
-Con una planificación completa, es momento de implementar el proyecto siguiendo una metodología paso a paso que garantice calidad y coherencia.
+**Flujo anterior (4 prompts separados)**:
+- ⏱️ 2-4 horas de configuración inicial
+- 📝 4 prompts diferentes para ejecutar
+- 🔄 Múltiples pasos manuales
+- 📋 Documentos separados que mantener sincronizados
 
-### Uso del prompt Ejecución_desarrollo
+**Nuevo flujo simplificado**:
+- ⚡ 5 minutos de configuración inicial
+- 🎯 1 script + 1 prompt = todo listo
+- 🤖 Metodología automática establecida
+- 📚 Documentación que crece automáticamente
 
-El prompt `Ejecución_desarrollo` está diseñado para guiar la implementación de tareas específicas del proyecto, siguiendo un enfoque estructurado y metódico.
+#### Métricas de eficiencia
 
-#### Proceso de ejecución:
+El nuevo flujo reduce significativamente:
+- **Tiempo de setup**: De 2-4 horas a 5-10 minutos
+- **Comandos manuales**: De 20+ pasos a 2 comandos
+- **Errores de configuración**: Eliminados por automatización
+- **Inconsistencias**: Estructura estándar garantizada
 
-1. **Preparación**:
-   - Identifica la tarea específica a implementar (ej: `{{TASK}} = 11.2`)
-   - Revisa la documentación relacionada con la tarea
-   - Verifica las dependencias y requisitos previos
+#### Escalabilidad
 
-2. **Ejecución del prompt**:
-   - Proporciona el identificador de tarea al prompt
-   - Asegúrate de que hay suficiente contexto sobre la tarea
-   - Define expectativas claras para el resultado
+Este sistema escala eficientemente:
+- **Proyectos pequeños**: Setup completo en minutos
+- **Proyectos medianos**: Metodología robusta establecida
+- **Proyectos grandes**: Documentación y memoria que evoluciona
+- **Equipos**: Estructura consistente para todos los desarrolladores
 
-3. **Seguimiento del proceso**:
-   - El prompt guiará a través del análisis, planificación y ejecución
-   - Se dividirá la tarea en subtareas manejables
-   - Se implementará cada subtarea secuencialmente
-   - Se realizarán pruebas y documentación
+### Resumen del capítulo
 
-#### Elementos clave del proceso:
+El flujo de trabajo completo se ha simplificado radicalmente, pasando de un proceso manual de múltiples pasos a un sistema automatizado y eficiente:
 
-El enfoque guiado por el prompt incluye:
+1. **🚀 Inicialización**: Un script crea toda la estructura y descarga el prompt genérico
+2. **🎯 Personalización**: Un prompt genera automáticamente 8 archivos .cursor específicos del proyecto  
+3. **⚡ Ejecución**: Metodología establecida para desarrollo eficiente con IA
+4. **🔄 Evolución**: Sistema que mejora continuamente basándose en uso real
 
-1. **Análisis Inicial**:
-   - Comprender el contexto del proyecto
-   - Identificar requisitos específicos
-   - Evaluar dependencias y restricciones
-
-2. **Planificación de Subtareas**:
-   - Dividir la tarea en pasos lógicos y secuenciales
-   - Establecer prioridades
-   - Definir criterios de éxito para cada subtarea
-
-3. **Ejecución Paso a Paso**:
-   - Implementar cada subtarea
-   - Añadir AI-Hints estratégicos
-   - Probar cada componente implementado
-   - Documentar el código y funcionalidades
-
-4. **Integración**:
-   - Asegurar que las partes implementadas funcionan en conjunto
-   - Validar contra requisitos originales
-   - Actualizar documentación general
-
-### Metodología de desarrollo con IA
-
-El desarrollo eficiente con Cursor IDE sigue un patrón que maximiza las capacidades de la IA mientras mantiene un alto estándar de calidad.
-
-#### Ciclo de desarrollo:
-
-1. **Definición clara**:
-   - Especificar exactamente qué se va a implementar
-   - Proporcionar contexto suficiente
-   - Establecer criterios de éxito
-
-2. **Generación asistida**:
-   - Usar Cursor para generar la implementación inicial
-   - Proporcionar retroalimentación y refinar
-   - Añadir AI-Hints para futuras interacciones
-
-3. **Validación**:
-   - Revisar el código generado
-   - Ejecutar pruebas
-   - Verificar contra requisitos
-
-4. **Refinamiento**:
-   - Optimizar rendimiento si es necesario
-   - Mejorar legibilidad y mantenibilidad
-   - Completar documentación
-
-5. **Integración**:
-   - Probar con otros componentes
-   - Resolver conflictos o problemas de integración
-   - Actualizar documentación del proyecto
-
-#### Prácticas recomendadas:
-
-1. **Comunicación efectiva con la IA**:
-   - Ser específico en las instrucciones
-   - Proporcionar ejemplos cuando sea posible
-   - Darle feedback claro
-
-2. **AI-Hints estratégicos**:
-   - Añadir en puntos clave del código
-   - Incluir información no obvia del contexto
-   - Actualizar cuando cambie la lógica
-
-3. **Iteraciones pequeñas**:
-   - Preferir múltiples generaciones pequeñas
-   - Validar frecuentemente
-   - Refinar progresivamente
-
-4. **Revisión humana**:
-   - Revisar siempre el código generado
-   - Verificar especialmente seguridad y rendimiento
-   - Asegurar adherencia a estándares del proyecto
-
-### Ejemplos prácticos
-
-**Ejemplo de implementación de componente**:
-
-```markdown
-## Implementación de AuthService
-
-### Análisis
-La tarea requiere crear un servicio de autenticación que maneje login, registro y gestión de tokens JWT.
-
-Dependencias identificadas:
-- Modelo de Usuario
-- Librería de JWT
-- Configuración de la aplicación
-
-### Subtareas
-
-#### 1. Crear estructura base del servicio
+Este enfoque maximiza la eficiencia del desarrollo con IA mientras mantiene la calidad y consistencia en todos los proyectos.
 ```typescript
 // src/services/auth.service.ts
 

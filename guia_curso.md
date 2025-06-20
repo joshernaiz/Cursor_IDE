@@ -116,25 +116,25 @@ El objetivo principal de este curso es que aprendas a estructurar tu trabajo de 
 
 ### 5. [Flujo de Trabajo Completo](./contenidos/05_flujo_trabajo.md)
 
-5.1. **Planificación de Proyectos**
-   - Uso del prompt 1_Plan_Disenio
-   - Creación de DESIGN_PLAN.md
-   - Estructuración inicial
+5.1. **Inicialización Automática del Proyecto**
+   - Uso del script `init_base_doc.sh` para crear estructura base
+   - Descarga automática del prompt genérico desde GitHub
+   - Configuración inicial de .cursor y documentación
 
-5.2. **Implementación Técnica**
-   - Uso del prompt 2_Plan_Implantacion
-   - Creación de IMPLEMENTATION_PLAN.md
-   - Decisiones arquitectónicas
+5.2. **Generación de Estructura Personalizada**
+   - Uso del prompt genérico `base_prompt.md` descargado
+   - Personalización automática según el proyecto específico
+   - Creación de reglas .cursor y memoria de contexto
 
-5.3. **Lista de Tareas Concretas**
-   - Uso del prompt 3_Prompt_TODO
-   - Creación de TODO.md
-   - Seguimiento del progreso
+5.3. **Ejecución Estructurada de Tareas**
+   - Uso del archivo TODO.md generado automáticamente
+   - Implementación paso a paso con metodología definida
+   - Seguimiento del progreso con documentación incremental
 
-5.4. **Ejecución del Desarrollo**
-   - Uso del prompt 4_Ejecucion_desarrollo
-   - Implementación paso a paso
-   - Pruebas y validación
+5.4. **Mantenimiento y Evolución**
+   - Actualización continua de documentación en docs/info/
+   - Refinamiento de AI-Hints según evolución del proyecto
+   - Optimización de reglas .cursor basada en uso real
 
 ### 6. [Documentación para IAs](./contenidos/06_documentacion_ias.md)
 

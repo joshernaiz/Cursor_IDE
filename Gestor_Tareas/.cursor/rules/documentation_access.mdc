@@ -1,0 +1,203 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Reglas de Acceso a Documentación Técnica
+
+## Objetivo
+Permitir a la IA acceder de forma inteligente y eficiente a la documentación técnica del proyecto, utilizando el índice como guía y consultando solo los documentos relevantes para cada tipo de consulta.
+
+# Reglas de Acceso a Documentación Técnica
+
+## Objetivo
+Establecer estrategias inteligentes y eficientes para acceder a la documentación técnica de TaskManager Pro, optimizando el tiempo de consulta y garantizando acceso preciso a la información relevante.
+
+## Archivo Índice Principal
+
+### 📑 `docs/info/index.md`
+**Contenido:** Índice maestro completo de toda la documentación técnica del proyecto TaskManager Pro organizada por categorías funcionales
+**Usar SIEMPRE cuando:**
+- Se necesite localizar documentación específica sobre componentes, servicios, o funcionalidades
+- No se sepa exactamente dónde está la información sobre React, FastAPI, o MariaDB
+- Se requiera una visión general de qué documentación técnica existe en el proyecto
+- Se busque la estructura organizacional de la documentación por áreas tecnológicas
+
+## Estructura de Documentación por Categorías
+
+### 🏗️ **Arquitectura y Estructura**
+**Carpetas:** `docs/info/arquitectura/`
+**Usar cuando se pregunte sobre:**
+- Arquitectura general de 3 capas del sistema TaskManager Pro
+- Relaciones entre componentes frontend React y backend FastAPI
+- Flujos de datos entre cliente y servidor
+- Integración entre diferentes módulos del sistema
+
+### 📊 **Backend y API**
+**Carpetas:** `docs/info/backend/`
+**Usar cuando se pregunte sobre:**
+- Implementación de servicios FastAPI (TaskService, UserService, AuthService)
+- Endpoints REST y documentación de API
+- Middleware de autenticación y validación
+- Lógica de negocio y procesamiento de datos del servidor
+
+### 🎨 **Frontend y UI**
+**Carpetas:** `docs/info/frontend/`
+**Usar cuando se pregunte sobre:**
+- Componentes React implementados y su funcionamiento
+- Custom hooks desarrollados para TaskManager Pro
+- Gestión de estado global y local en la aplicación
+- Patrones de UI y experiencia de usuario
+
+### 💾 **Base de Datos y Modelos**
+**Carpetas:** `docs/info/database/`
+**Usar cuando se pregunte sobre:**
+- Modelos SQLAlchemy (User, Task, Project, Category)
+- Esquemas de base de datos MariaDB y relaciones
+- Migraciones y cambios de estructura de datos
+- Consultas y optimizaciones de base de datos
+
+### 🔧 **Configuración y Deployment**
+**Carpetas:** `docs/info/configuracion/`, `docs/info/deployment/`
+**Usar cuando se pregunte sobre:**
+- Configuración de Docker Compose para desarrollo y producción
+- Variables de entorno y configuración de servicios
+- Proceso de despliegue y setup de infraestructura
+- Configuración de conexiones entre servicios
+
+### 🧪 **Testing y Validación**
+**Carpetas:** `docs/info/testing/`
+**Usar cuando se pregunte sobre:**
+- Implementación de tests unitarios con pytest y vitest
+- Pruebas de integración y validación end-to-end
+- Validación de API y contratos de endpoints
+- Estrategias de testing y cobertura de código
+
+### 📋 **Desarrollo y Patrones**
+**Carpetas:** `docs/info/desarrollo/`
+**Usar cuando se pregunte sobre:**
+- Patrones específicos de desarrollo para React y FastAPI
+- Ejemplos de AI-Hints y convenciones de código
+- Best practices y guías de desarrollo del proyecto
+- Estándares de calidad y formateo de código
+
+## Estrategia de Consulta Inteligente
+
+### 🎯 **Paso 1: Consultar Índice PRIMERO**
+- Acceder **SIEMPRE** a `docs/info/index.md` para localizar documentación específica
+- Identificar la categoría más relevante para la consulta
+- Verificar el estado del documento (✅ Completado, 🚧 En progreso, 📋 Planificado)
+- Seleccionar documentos específicos según el tipo de información requerida
+
+### 🔍 **Paso 2: Localizar Documentos Específicos**
+- Acceder a la carpeta de categoría identificada en el paso 1
+- Consultar documentos específicos según la funcionalidad requerida
+- Verificar fecha de última actualización para garantizar información actualizada
+- Combinar múltiples documentos si la consulta abarca varias áreas
+
+### 📚 **Paso 3: Consulta Eficiente**
+- Leer secciones específicas relevantes para la consulta
+- Extraer información técnica precisa (versiones, configuraciones, patrones)
+- Identificar dependencias y relaciones con otros componentes
+- Aplicar información encontrada al contexto específico de la tarea
+
+## Reglas de Priorización por Tipo de Consulta
+
+### 💻 **Implementación de Código**
+1. `docs/info/index.md` (localizar documentación de patrones y ejemplos)
+2. `docs/info/desarrollo/` (patrones específicos de React/FastAPI)
+3. `docs/info/backend/` o `docs/info/frontend/` (según área específica)
+4. `docs/info/database/` (si involucra modelos de datos)
+
+### 🐛 **Debugging y Errores**
+1. `docs/info/index.md` (buscar documentación de errores conocidos)
+2. `docs/info/testing/` (validación y casos de prueba)
+3. Documentación específica de la categoría del componente con problemas
+4. `docs/info/configuracion/` (si es problema de configuración o ambiente)
+
+### 🏗️ **Arquitectura y Diseño**
+1. `docs/info/index.md` (navegación completa de arquitectura)
+2. `docs/info/arquitectura/` (visión general del sistema)
+3. Documentación específica de componentes relacionados
+4. `docs/info/database/` (para arquitectura de datos)
+
+### ⚙️ **Configuración y Setup**
+1. `docs/info/index.md` (localizar documentación de configuración)
+2. `docs/info/configuracion/` (variables de entorno y setup)
+3. `docs/info/deployment/` (Docker y despliegue)
+4. Documentación específica según el servicio a configurar
+
+### 🔄 **Integración entre Componentes**
+1. `docs/info/index.md` (localizar documentación de integración)
+2. `docs/info/arquitectura/` (flujos de datos y comunicación)
+3. `docs/info/backend/` y `docs/info/frontend/` (comunicación API)
+4. `docs/info/database/` (modelos y relaciones de datos)
+
+### 🧪 **Testing y Validación**
+1. `docs/info/index.md` (localizar documentación de testing)
+2. `docs/info/testing/` (estrategias y casos de prueba)
+3. Documentación específica del componente a probar
+4. `docs/info/desarrollo/` (patrones de testing)
+
+## Señales de Uso Eficiente
+
+### ✅ **Buenas Prácticas:**
+- Siempre comenzar con `docs/info/index.md` para orientación inicial
+- Verificar el estado de los documentos antes de consultar información
+- Combinar múltiples documentos para consultas complejas que abarcan varias áreas
+- Priorizar documentación ✅ Completada sobre 🚧 En progreso para información confiable
+
+### ❌ **Evitar:**
+- Consultar documentación específica sin revisar el índice maestro primero
+- Usar información de documentos marcados como 📋 Planificado
+- Ignorar las fechas de última actualización en documentos críticos
+
+### 🔄 **Flujo Recomendado:**
+1. **Identificar tipo de consulta** (implementación, debugging, arquitectura, etc.)
+2. **Consultar `docs/info/index.md`** para localizar documentación relevante
+3. **Seleccionar documentos específicos** según priorización por tipo de consulta
+4. **Verificar estado y fecha** de documentos seleccionados
+5. **Extraer información específica** y aplicar al contexto de la tarea
+6. **Consultar documentación adicional** si es necesario para completar la información
+
+## Casos de Uso Especiales
+
+### 🚀 **Implementación de Nueva Funcionalidad**
+- **Paso 1**: `docs/info/index.md` → identificar patrones existentes
+- **Paso 2**: `docs/info/desarrollo/` → obtener ejemplos de código
+- **Paso 3**: `docs/info/arquitectura/` → entender integración con sistema existente
+- **Paso 4**: Documentación específica de área técnica (backend/frontend/database)
+
+### 🔧 **Configuración de Ambiente de Desarrollo**
+- **Paso 1**: `docs/info/index.md` → localizar documentación de configuración
+- **Paso 2**: `docs/info/configuracion/` → variables de entorno y dependencias
+- **Paso 3**: `docs/info/deployment/` → configuración de Docker y servicios
+- **Paso 4**: `docs/info/testing/` → validación de configuración correcta
+
+### 📊 **Análisis de Performance y Optimización**
+- **Paso 1**: `docs/info/index.md` → localizar documentación de performance
+- **Paso 2**: `docs/info/arquitectura/` → identificar cuellos de botella arquitectónicos
+- **Paso 3**: `docs/info/backend/` → optimizaciones de API y servicios
+- **Paso 4**: `docs/info/database/` → optimizaciones de consultas y modelos
+
+### 🎯 **Resolución de Problemas Específicos**
+- **Paso 1**: `docs/info/index.md` → búsqueda por área problemática
+- **Paso 2**: `docs/info/testing/` → casos de prueba y validación
+- **Paso 3**: Documentación específica del componente problemático
+- **Paso 4**: `docs/info/desarrollo/` → patrones y best practices aplicables
+
+## Integración con Memoria de Contexto
+
+### 🧠 **Uso Complementario con Archivos de Memoria**
+- **Consultar documentación** para información específica de implementación
+- **Usar archivos de memoria** para contexto arquitectónico y decisiones
+- **Combinar ambos** para comprensión completa del proyecto
+
+### 📋 **Priorización Inteligente**
+- **Documentación técnica** (`docs/info/`) para detalles de implementación
+- **Memoria de contexto** (`.cursor/memory/`) para visión estratégica
+- **Ambos juntos** para tareas complejas que requieren contexto completo
+
+---
+*Última actualización: 2024-12-19*
+*Documentos indexados: Variable según progreso del proyecto en 7 categorías principales*

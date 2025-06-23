@@ -1,0 +1,139 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Reglas de Uso de Memoria de Contexto
+
+## Objetivo
+Optimizar el consumo de tokens proporcionando a la IA el contexto mínimo necesario según el tipo de consulta o tarea.
+
+# Reglas de Uso de Memoria de Contexto
+
+## Objetivo
+Optimizar el uso de tokens y mantener el contexto mínimo necesario para desarrollo eficiente de TaskManager Pro, un sistema de gestión de tareas con React + FastAPI + MariaDB.
+
+## Archivos de Memoria Disponibles
+
+### 📋 `.cursor/memory/long_memory/project_brief.md`
+**Contenido:** Resumen ejecutivo completo del proyecto TaskManager Pro, objetivos, stakeholders, timeline y criterios de éxito
+**Usar cuando:**
+- Se necesite contexto general del proyecto y sus objetivos de negocio
+- Se requiera información sobre stakeholders y requisitos funcionales
+- Se busque entender el propósito educativo del proyecto
+- Se necesiten criterios de validación y success metrics
+**NO usar para:** Detalles técnicos de implementación, patrones de código específicos, o decisiones arquitectónicas detalladas
+
+### 🏗️ `.cursor/memory/long_memory/architecture.md`
+**Contenido:** Arquitectura completa del sistema: componentes, flujos de datos, stack tecnológico (React/FastAPI/MariaDB), deployment y escalabilidad
+**Usar cuando:**
+- Se implemente funcionalidad que requiera entender la arquitectura de 3 capas
+- Se necesite información sobre tecnologías específicas (React 18+, FastAPI 0.100+, MariaDB 10.11+)
+- Se trabaje con integraciones entre frontend y backend REST API
+- Se configure Docker, contenedores o despliegue del sistema
+**NO usar para:** Patrones de código específicos, decisiones de negocio, o tareas de usuario final
+
+### 🔧 `.cursor/memory/long_memory/decisions.md`
+**Contenido:** Registro de decisiones arquitectónicas (ADRs) incluyendo elección de React vs Vue, FastAPI vs Django, MariaDB vs PostgreSQL, y patrones de desarrollo
+**Usar cuando:**
+- Se evalúen alternativas tecnológicas o se justifiquen decisiones técnicas
+- Se necesite contexto sobre por qué se eligieron tecnologías específicas
+- Se implementen cambios que afecten decisiones arquitectónicas previas
+- Se requiera historial de trade-offs y consecuencias de decisiones técnicas
+**NO usar para:** Implementación de código específico, tareas de usuario, o información general del proyecto
+
+### 👨‍💻 `.cursor/memory/long_memory/patterns.md`
+**Contenido:** Patrones de código, convenciones de desarrollo, AI-Hints obligatorios, naming conventions y ejemplos específicos para React/FastAPI/Python/TypeScript
+**Usar cuando:**
+- Se escriba código nuevo que requiera seguir patrones establecidos
+- Se necesiten ejemplos de AI-Hints específicos para el stack tecnológico
+- Se implementen componentes React, endpoints FastAPI, o modelos SQLAlchemy
+- Se requieran convenciones de naming, estructura de archivos, o testing patterns
+**NO usar para:** Decisiones de arquitectura, información de negocio, o configuración de infraestructura
+
+## Reglas de Optimización
+
+### ✅ Cargar Múltiples Archivos Cuando:
+- **Implementación de funcionalidad completa**: architecture.md + patterns.md + decisions.md (para entender arquitectura, patrones y justificaciones)
+- **Diseño de nuevos módulos**: project_brief.md + architecture.md (para alinear objetivos de negocio con arquitectura técnica)
+- **Refactoring arquitectónico**: architecture.md + decisions.md + patterns.md (para mantener consistencia con decisiones previas)
+
+### ⚡ Cargar Solo Un Archivo Cuando:
+- **Implementación de código simple**: Solo patterns.md para seguir convenciones establecidas
+- **Consultas de negocio**: Solo project_brief.md para objetivos y stakeholders
+- **Debugging de arquitectura**: Solo architecture.md para flujos de datos y componentes
+- **Consulta histórica**: Solo decisions.md para entender decisiones pasadas
+
+### ❌ NO Cargar Archivos Cuando:
+- Se trabaje con tareas simples de configuración que no requieren contexto del proyecto
+- Se manejen dependencias básicas (package.json, requirements.txt) sin lógica compleja
+- Se actualice documentación que no afecte código o arquitectura
+
+## Priorización por Tipo de Consulta
+
+1. **Implementación de componentes React**: patterns.md → architecture.md
+2. **Desarrollo de endpoints FastAPI**: patterns.md → architecture.md → decisions.md
+3. **Configuración de base de datos**: architecture.md → patterns.md
+4. **Planificación de funcionalidades**: project_brief.md → architecture.md
+5. **Debugging de integración**: architecture.md → patterns.md
+6. **Evaluación tecnológica**: decisions.md → architecture.md
+
+## Señales de Uso Eficiente
+
+### ✅ Buenas prácticas:
+- Consultar patterns.md antes de escribir cualquier código para mantener consistencia
+- Usar architecture.md para entender flujos de datos antes de implementar integraciones
+- Revisar decisions.md cuando se consideren cambios arquitectónicos importantes
+
+### ❌ Evitar:
+- Cargar todos los archivos para consultas simples de sintaxis o configuración básica
+- Usar project_brief.md para detalles técnicos específicos de implementación
+- Consultar decisions.md para patrones de código rutinarios
+
+## Acceso a Documentación Técnica
+
+### 📑 Archivo Índice Principal: `docs/info/index.md`
+**Usar cuando:**
+- Se necesite localizar documentación específica generada durante el desarrollo
+- Se busque información sobre componentes implementados y su estado
+- Se requiera navegación por categorías de documentación técnica
+
+### 📊 Estrategia de Consulta de Documentación:
+1. **Consultar `docs/info/index.md`** para localizar documentación específica
+2. **Acceder a documentos categorizados** en `docs/info/[categoría]/`
+3. **Validar estado de completitud** según índices de documentación
+
+## Ejecución de Tareas TODO
+
+### 📋 Sistema de Tareas: `docs/TODO.md`
+**Usar cuando:**
+- Se requiera ejecutar tareas específicas del proyecto de forma estructurada
+- Se necesite seguir la metodología de desarrollo paso a paso
+- Se implemente funcionalidad siguiendo la progresión planificada
+
+### 🔄 Flujo de Ejecución de Tareas:
+1. **Consultar TODO.md** para identificar tarea específica
+2. **Cargar contexto apropiado** según tipo de tarea (usar reglas de priorización)
+3. **Ejecutar metodología estructurada** definida en task_execution.mdc
+4. **Documentar resultados** actualizando `docs/info/index.md`
+
+## AI-Hints Obligatorios
+
+### 📝 Formato AI-Hint para TaskManager Pro:
+```python
+# AI-Hint: [Propósito específico] | [Relaciones con UserService/TaskService/etc] | [Restricciones de FastAPI/SQLAlchemy] | [TODOs específicos]
+```
+
+```typescript
+// AI-Hint: [Propósito específico] | [Integraciones con API/Redux/etc] | [Restricciones de React/TypeScript] | [TODOs específicos]
+```
+
+### 🎯 Usar AI-Hints obligatoriamente en:
+- Servicios FastAPI y modelos SQLAlchemy
+- Componentes React complejos y custom hooks
+- Integraciones entre frontend y backend
+- Configuraciones de Docker y base de datos
+
+---
+*Última actualización: 2024-12-19*
+*Total archivos de memoria: 4*

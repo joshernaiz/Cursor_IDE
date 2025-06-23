@@ -1,0 +1,576 @@
+# REQUISITOS DEL PROYECTO - TASKMANAGER PRO
+
+## INFORMACIÓN GENERAL DEL PROYECTO
+
+### Nombre del Proyecto
+**TaskManager Pro** - Sistema de Gestión de Tareas Colaborativo
+
+### Descripción General
+TaskManager Pro es una aplicación web moderna para la gestión y seguimiento de tareas personales y de equipo. Permite a los usuarios crear, organizar, asignar y monitorear tareas con un flujo de trabajo intuitivo y colaborativo. La aplicación está diseñada como un proyecto educativo para demostrar las mejores prácticas de desarrollo full-stack con tecnologías modernas.
+
+### Propósito Educativo
+- Demostrar desarrollo full-stack moderno con React, FastAPI y MariaDB
+- Mostrar arquitectura basada en contenedores con Docker
+- Ejemplificar patrones de desarrollo con IA y AI-Hints
+- Servir como base para cursos de desarrollo colaborativo con IA
+
+## STACK TECNOLÓGICO ESPECÍFICO
+
+### Frontend
+- **React 18.2+**: Biblioteca principal de UI con Hooks y Context API  
+- **Vite 4.4+**: Build tool y dev server con hot reload
+- **TypeScript 5.0+**: Tipado estático para mejor desarrollo
+- **Tailwind CSS 3.3+**: Framework de utilidades CSS
+- **React Router 6.8+**: Enrutamiento del lado del cliente
+- **Axios 1.4+**: Cliente HTTP para comunicación con API
+- **React Hook Form 7.45+**: Manejo de formularios
+- **React Query 4.29+**: Estado del servidor y cache
+- **Date-fns 2.30+**: Manipulación de fechas
+- **Lucide React 0.263+**: Iconos consistentes
+
+### Backend
+- **Python 3.11+**: Lenguaje base del backend
+- **FastAPI 0.100+**: Framework web moderno con auto-documentación
+- **Pydantic 2.0+**: Validación de datos y serialización
+- **SQLAlchemy 2.0+**: ORM para interacción con base de datos
+- **Alembic 1.11+**: Migraciones de base de datos
+- **Passlib 1.7+**: Hasheo de contraseñas
+- **PyJWT 2.7+**: Manejo de tokens JWT
+- **python-multipart 0.0.6+**: Soporte para form-data
+- **Uvicorn 0.22+**: Servidor ASGI de alto rendimiento
+
+### Base de Datos
+- **MariaDB 10.11+**: Base de datos relacional principal
+- **Redis 7.0+**: Cache y almacenamiento de sesiones (opcional para v2)
+
+### Containerización y Orquestación
+- **Docker 24.0+**: Containerización de servicios
+- **Docker Compose 2.20+**: Orquestación de contenedores
+- **Multi-stage builds**: Optimización de imágenes
+- **Health checks**: Monitoreo de servicios
+- **Volumes**: Persistencia de datos de desarrollo
+
+### Herramientas de Desarrollo
+- **ESLint + Prettier**: Linting y formateo de código frontend
+- **Black + isort**: Formateo de código Python
+- **Pytest 7.4+**: Testing del backend
+- **Vitest 0.32+**: Testing del frontend
+- **Pre-commit hooks**: Validación automática de código
+
+## FUNCIONALIDADES CORE
+
+### 1. Gestión de Usuarios
+- **Registro de usuarios**: Email, contraseña, nombre completo, avatar opcional
+- **Autenticación**: Login/logout con JWT tokens
+- **Perfil de usuario**: Edición de información personal
+- **Roles básicos**: Usuario estándar y Administrador
+- **Recuperación de contraseña**: Flujo básico (sin email real)
+
+### 2. Gestión de Tareas (CRUD Completo)
+- **Crear tarea**: Título, descripción, fecha límite, prioridad, estado
+- **Listar tareas**: Vista general con filtros y ordenamiento
+- **Editar tarea**: Modificación de todos los campos
+- **Eliminar tarea**: Soft delete con confirmación
+- **Estados de tarea**: Pendiente, En Progreso, Completada, Cancelada
+- **Prioridades**: Baja, Media, Alta, Crítica
+- **Fechas**: Fecha de creación, fecha límite, fecha de completado
+
+### 3. Categorización y Organización
+- **Categorías**: Trabajo, Personal, Estudio, Salud, etc.
+- **Etiquetas/Tags**: Sistema de etiquetado flexible
+- **Proyectos**: Agrupación de tareas relacionadas
+- **Filtros avanzados**: Por estado, prioridad, fecha, categoría, etiquetas
+
+### 4. Interfaz de Usuario
+- **Dashboard**: Resumen de tareas, estadísticas básicas
+- **Vista de lista**: Tabla con ordenamiento y filtros
+- **Vista de kanban**: Tablero visual por estados (opcional v2)
+- **Búsqueda**: Búsqueda por título y descripción
+- **Responsive design**: Adaptable a móviles y tablets
+- **Modo oscuro/claro**: Alternancia de temas
+
+### 5. Colaboración Básica
+- **Asignación de tareas**: Asignar tareas a otros usuarios
+- **Comentarios**: Sistema básico de comentarios en tareas
+- **Notificaciones**: Notificaciones in-app básicas
+- **Actividad**: Log de cambios en tareas
+
+## ARQUITECTURA TÉCNICA DETALLADA
+
+### Arquitectura General
+- **Patrón**: Arquitectura de 3 capas con separación clara
+- **Frontend**: SPA (Single Page Application) con React
+- **Backend**: RESTful API con FastAPI
+- **Base de Datos**: Relacional con MariaDB
+- **Comunicación**: HTTP/REST con JSON
+- **Autenticación**: JWT Bearer tokens
+- **Estado**: Cliente mantiene estado local + cache del servidor
+
+### Estructura de Directorios
+
+```
+taskmanager-pro/
+├── docker-compose.yml                 # Orquestación principal
+├── docker-compose.dev.yml            # Override para desarrollo
+├── .env.example                       # Variables de entorno ejemplo
+├── README.md                          # Documentación principal
+├── frontend/                          # Aplicación React
+│   ├── Dockerfile                     # Imagen de frontend
+│   ├── package.json                   # Dependencias Node
+│   ├── vite.config.ts                # Configuración Vite
+│   ├── tailwind.config.js            # Configuración Tailwind
+│   ├── src/
+│   │   ├── components/               # Componentes reutilizables
+│   │   │   ├── common/              # Componentes comunes
+│   │   │   ├── forms/               # Componentes de formularios
+│   │   │   ├── layouts/             # Layouts de página
+│   │   │   └── tasks/               # Componentes específicos de tareas
+│   │   ├── pages/                   # Páginas/rutas principales
+│   │   ├── hooks/                   # Custom hooks
+│   │   ├── services/                # Servicios de API
+│   │   ├── stores/                  # Estado global (Context/Zustand)
+│   │   ├── types/                   # Definiciones TypeScript
+│   │   ├── utils/                   # Utilidades y helpers
+│   │   └── styles/                  # Estilos globales
+│   └── public/                      # Archivos estáticos
+├── backend/                         # API FastAPI
+│   ├── Dockerfile                   # Imagen de backend
+│   ├── requirements.txt             # Dependencias Python
+│   ├── app/
+│   │   ├── main.py                  # Punto de entrada
+│   │   ├── config/                  # Configuración
+│   │   ├── models/                  # Modelos SQLAlchemy
+│   │   ├── schemas/                 # Esquemas Pydantic
+│   │   ├── routers/                 # Endpoints API
+│   │   ├── services/                # Lógica de negocio
+│   │   ├── dependencies/            # Dependencias FastAPI
+│   │   ├── utils/                   # Utilidades
+│   │   └── tests/                   # Tests
+│   └── alembic/                     # Migraciones de BD
+└── database/                        # Configuración MariaDB
+    ├── init-scripts/                # Scripts de inicialización
+    └── data/                        # Volumen de datos (gitignored)
+```
+
+### Modelos de Datos
+
+#### Usuario
+```sql
+users (
+    id: INT PRIMARY KEY AUTO_INCREMENT,
+    email: VARCHAR(255) UNIQUE NOT NULL,
+    username: VARCHAR(100) UNIQUE NOT NULL,
+    full_name: VARCHAR(255) NOT NULL,
+    hashed_password: VARCHAR(255) NOT NULL,
+    avatar_url: VARCHAR(500) NULL,
+    is_active: BOOLEAN DEFAULT TRUE,
+    is_admin: BOOLEAN DEFAULT FALSE,
+    created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)
+```
+
+#### Proyecto
+```sql
+projects (
+    id: INT PRIMARY KEY AUTO_INCREMENT,
+    name: VARCHAR(255) NOT NULL,
+    description: TEXT NULL,
+    color: VARCHAR(7) DEFAULT '#3B82F6', -- Hex color
+    owner_id: INT NOT NULL,
+    created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+)
+```
+
+#### Categoría
+```sql
+categories (
+    id: INT PRIMARY KEY AUTO_INCREMENT,
+    name: VARCHAR(100) NOT NULL,
+    color: VARCHAR(7) DEFAULT '#6B7280',
+    icon: VARCHAR(50) DEFAULT 'folder',
+    user_id: INT NOT NULL,
+    created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
+```
+
+#### Tarea
+```sql
+tasks (
+    id: INT PRIMARY KEY AUTO_INCREMENT,
+    title: VARCHAR(255) NOT NULL,
+    description: TEXT NULL,
+    status: ENUM('pending', 'in_progress', 'completed', 'cancelled') DEFAULT 'pending',
+    priority: ENUM('low', 'medium', 'high', 'critical') DEFAULT 'medium',
+    due_date: DATETIME NULL,
+    completed_at: DATETIME NULL,
+    created_by: INT NOT NULL,
+    assigned_to: INT NULL,
+    project_id: INT NULL,
+    category_id: INT NULL,
+    created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (assigned_to) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+)
+```
+
+#### Etiquetas
+```sql
+tags (
+    id: INT PRIMARY KEY AUTO_INCREMENT,
+    name: VARCHAR(50) NOT NULL,
+    color: VARCHAR(7) DEFAULT '#8B5CF6',
+    user_id: INT NOT NULL,
+    created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
+
+task_tags (
+    task_id: INT,
+    tag_id: INT,
+    PRIMARY KEY (task_id, tag_id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+)
+```
+
+#### Comentarios
+```sql
+comments (
+    id: INT PRIMARY KEY AUTO_INCREMENT,
+    content: TEXT NOT NULL,
+    task_id: INT NOT NULL,
+    user_id: INT NOT NULL,
+    created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
+```
+
+### API Endpoints
+
+#### Autenticación
+- `POST /api/v1/auth/register` - Registro de usuario
+- `POST /api/v1/auth/login` - Login con credenciales
+- `POST /api/v1/auth/logout` - Logout (invalidar token)
+- `GET /api/v1/auth/me` - Información del usuario actual
+- `PUT /api/v1/auth/profile` - Actualizar perfil
+
+#### Usuarios
+- `GET /api/v1/users` - Listar usuarios (para asignación)
+- `GET /api/v1/users/{id}` - Obtener usuario específico
+- `PUT /api/v1/users/{id}` - Actualizar usuario (admin)
+- `DELETE /api/v1/users/{id}` - Desactivar usuario (admin)
+
+#### Tareas
+- `GET /api/v1/tasks` - Listar tareas con filtros y paginación
+- `POST /api/v1/tasks` - Crear nueva tarea
+- `GET /api/v1/tasks/{id}` - Obtener tarea específica
+- `PUT /api/v1/tasks/{id}` - Actualizar tarea
+- `DELETE /api/v1/tasks/{id}` - Eliminar tarea
+- `POST /api/v1/tasks/{id}/complete` - Marcar como completada
+- `POST /api/v1/tasks/{id}/assign` - Asignar a usuario
+
+#### Proyectos
+- `GET /api/v1/projects` - Listar proyectos del usuario
+- `POST /api/v1/projects` - Crear proyecto
+- `GET /api/v1/projects/{id}` - Obtener proyecto específico
+- `PUT /api/v1/projects/{id}` - Actualizar proyecto
+- `DELETE /api/v1/projects/{id}` - Eliminar proyecto
+- `GET /api/v1/projects/{id}/tasks` - Tareas del proyecto
+
+#### Categorías
+- `GET /api/v1/categories` - Listar categorías del usuario
+- `POST /api/v1/categories` - Crear categoría
+- `PUT /api/v1/categories/{id}` - Actualizar categoría
+- `DELETE /api/v1/categories/{id}` - Eliminar categoría
+
+#### Etiquetas
+- `GET /api/v1/tags` - Listar etiquetas del usuario
+- `POST /api/v1/tags` - Crear etiqueta
+- `PUT /api/v1/tags/{id}` - Actualizar etiqueta
+- `DELETE /api/v1/tags/{id}` - Eliminar etiqueta
+
+#### Comentarios
+- `GET /api/v1/tasks/{task_id}/comments` - Comentarios de tarea
+- `POST /api/v1/tasks/{task_id}/comments` - Crear comentario
+- `PUT /api/v1/comments/{id}` - Actualizar comentario
+- `DELETE /api/v1/comments/{id}` - Eliminar comentario
+
+#### Dashboard
+- `GET /api/v1/dashboard/stats` - Estadísticas generales
+- `GET /api/v1/dashboard/recent` - Actividad reciente
+
+### Configuración Docker
+
+#### docker-compose.yml
+```yaml
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mysql+pymysql://taskmanager:taskmanager123@database:3306/taskmanager_db
+      - SECRET_KEY=your-secret-key-here-change-in-production
+      - DEBUG=true
+    volumes:
+      - ./backend:/app
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: mariadb:10.11
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword123
+      - MYSQL_DATABASE=taskmanager_db
+      - MYSQL_USER=taskmanager
+      - MYSQL_PASSWORD=taskmanager123
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./database/init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+```
+
+## CARACTERÍSTICAS DE DESARROLLO
+
+### Patrones de Código Obligatorios
+
+#### AI-Hints en Todo el Código
+```python
+# AI-Hint: Servicio de autenticación con JWT | Depende de UserRepository y PasswordHasher | Tokens válidos 24h máximo | TODO: Implementar refresh tokens
+class AuthService:
+    def authenticate_user(self, email: str, password: str) -> Optional[User]:
+        # Implementación
+```
+
+```typescript
+// AI-Hint: Hook personalizado para gestión de tareas | Integra con React Query y TaskAPI | Maneja cache automático | TODO: Añadir optimistic updates
+export const useTasks = (filters: TaskFilters) => {
+    // Implementación
+}
+```
+
+#### Convenciones de Naming
+- **Archivos Python**: snake_case.py
+- **Archivos TypeScript/React**: PascalCase.tsx para componentes, camelCase.ts para utilidades
+- **Variables**: camelCase en TS, snake_case en Python
+- **Clases**: PascalCase en ambos lenguajes
+- **Constantes**: UPPER_SNAKE_CASE en ambos
+
+#### Estructura de Componentes React
+```typescript
+// AI-Hint: Componente de lista de tareas con filtros y paginación | Usa useTask hook y TaskCard | Responsivo con Tailwind | TODO: Añadir drag and drop
+interface TaskListProps {
+  filters: TaskFilters;
+  onTaskSelect: (task: Task) => void;
+}
+
+export const TaskList: React.FC<TaskListProps> = ({ filters, onTaskSelect }) => {
+  // Implementación
+};
+```
+
+### Testing Requirements
+
+#### Backend Testing
+- **Cobertura mínima**: 80% en servicios y routers
+- **Tipos de tests**: Unitarios para servicios, integración para endpoints
+- **Fixtures**: Datos de prueba consistent en `tests/fixtures/`
+- **Mocking**: Mocks para base de datos en tests unitarios
+
+#### Frontend Testing
+- **Cobertura mínima**: 70% en componentes principales
+- **Testing Library**: Enfoque en testing de comportamiento, no implementación
+- **Mocks**: API mocks con MSW para integration tests
+- **E2E**: Tests básicos para flujos críticos (login, CRUD tareas)
+
+### Configuración de Desarrollo
+
+#### Variables de Entorno
+```bash
+# Backend (.env)
+DATABASE_URL=mysql+pymysql://taskmanager:taskmanager123@localhost:3306/taskmanager_db
+SECRET_KEY=dev-secret-key-change-in-production
+DEBUG=true
+CORS_ORIGINS=http://localhost:3000
+TOKEN_EXPIRE_HOURS=24
+
+# Frontend (.env)
+VITE_API_URL=http://localhost:8000
+VITE_APP_NAME=TaskManager Pro
+VITE_APP_VERSION=1.0.0
+```
+
+#### Scripts de Desarrollo
+- `make dev` - Levantar entorno completo
+- `make build` - Construir imágenes de producción
+- `make test` - Ejecutar todos los tests
+- `make logs` - Ver logs de todos los servicios
+- `make db-reset` - Resetear base de datos con datos de ejemplo
+- `make db-migrate` - Ejecutar migraciones pendientes
+
+## CRITERIOS DE ÉXITO Y VALIDACIÓN
+
+### Funcionales
+- ✅ Usuario puede registrarse y hacer login
+- ✅ CRUD completo de tareas funciona correctamente
+- ✅ Filtros y búsqueda devuelven resultados esperados
+- ✅ Asignación de tareas entre usuarios funciona
+- ✅ Dashboard muestra estadísticas correctas
+- ✅ Responsive design funciona en móviles
+
+### Técnicos
+- ✅ API documenta automáticamente con FastAPI docs
+- ✅ Frontend se comunica correctamente con backend vía REST
+- ✅ Base de datos mantiene integridad referencial
+- ✅ Aplicación levanta con `docker-compose up`
+- ✅ Hot reload funciona en desarrollo
+- ✅ Tests pasan con cobertura mínima
+
+### Calidad de Código
+- ✅ Todos los archivos principales tienen AI-Hints
+- ✅ Código sigue convenciones de naming establecidas
+- ✅ No hay errores de linting en frontend ni backend
+- ✅ Commit hooks previenen código mal formateado
+- ✅ Documentación técnica generada automáticamente
+
+### Performance
+- ✅ Página principal carga en menos de 2 segundos
+- ✅ API responde en menos de 500ms para operaciones CRUD
+- ✅ Base de datos maneja al menos 1000 tareas sin degradación
+- ✅ Frontend maneja listas de 100+ tareas fluidamente
+
+## DATOS DE EJEMPLO PARA DESARROLLO
+
+### Usuarios de Prueba
+```json
+[
+  {
+    "email": "admin@taskmanager.pro",
+    "username": "admin",
+    "full_name": "Administrador Sistema",
+    "password": "admin123",
+    "is_admin": true
+  },
+  {
+    "email": "usuario1@taskmanager.pro", 
+    "username": "juanperez",
+    "full_name": "Juan Pérez",
+    "password": "usuario123",
+    "is_admin": false
+  },
+  {
+    "email": "usuario2@taskmanager.pro",
+    "username": "marialopez", 
+    "full_name": "María López",
+    "password": "usuario123",
+    "is_admin": false
+  }
+]
+```
+
+### Proyectos de Ejemplo
+- **Desarrollo Web**: Proyecto de desarrollo de aplicación web
+- **Marketing Digital**: Campaña de marketing en redes sociales
+- **Diseño UX/UI**: Rediseño de interfaz de usuario
+- **Personal**: Tareas personales y domésticas
+
+### Categorías Predefinidas
+- **Trabajo** (🏢, #3B82F6)
+- **Personal** (👤, #10B981) 
+- **Salud** (❤️, #EF4444)
+- **Educación** (📚, #8B5CF6)
+- **Finanzas** (💰, #F59E0B)
+- **Hogar** (🏠, #6B7280)
+
+### Tareas de Ejemplo
+- Mix de diferentes estados, prioridades y fechas
+- Algunas asignadas entre usuarios
+- Comentarios de ejemplo en algunas tareas
+- Variedad de etiquetas aplicadas
+
+## ROADMAP Y EXTENSIONES FUTURAS
+
+### Versión 1.1 - Colaboración Avanzada
+- Notificaciones push en tiempo real
+- Sistema de permisos granular por proyecto
+- Timeline de actividades detallada
+- Menciones en comentarios (@usuario)
+
+### Versión 1.2 - Productividad
+- Vista Kanban interactiva con drag & drop
+- Plantillas de tareas recurrentes
+- Tiempo de seguimiento (time tracking)
+- Reportes y métricas avanzadas
+
+### Versión 1.3 - Integraciones
+- API pública para integraciones
+- Webhooks para eventos de tareas
+- Importación/exportación de datos
+- Integración con calendarios externos
+
+### Versión 2.0 - Escalabilidad
+- Migración a microservicios
+- Implementación de cache con Redis
+- Búsqueda full-text con Elasticsearch
+- Optimizaciones de performance
+
+## NOTAS PARA GENERACIÓN DE DOCUMENTOS .cursor
+
+### Información Clave para project_brief.md
+- **Propósito educativo**: Proyecto para enseñar desarrollo full-stack con IA
+- **Audiencia**: Desarrolladores aprendiendo integración de IA en workflow
+- **Complejidad**: Intermedia - no trivial pero tampoco enterprise-level
+- **Timeline**: 4-6 semanas para versión completa funcional
+
+### Información Clave para architecture.md
+- **Patrón principal**: Clean Architecture con separación clara de capas
+- **Comunicación**: REST API con JSON entre frontend y backend
+- **Estado**: Cliente-servidor con cache inteligente en frontend
+- **Seguridad**: JWT tokens con middleware de autenticación
+
+### Información Clave para decisions.md
+- **Por qué React**: Ecosistema maduro, componentes reutilizables, gran comunidad
+- **Por qué FastAPI**: Auto-documentación, tipado moderno, performance
+- **Por qué MariaDB**: Compatibilidad MySQL, open source, estable
+- **Por qué Docker**: Consistencia entre entornos, fácil deployment
+
+### Información Clave para patterns.md
+- **AI-Hints obligatorios**: En todo código no trivial
+- **Convenciones estrictas**: Naming, estructura de archivos, formateo
+- **Patrones React**: Custom hooks, compound components, render props
+- **Patrones FastAPI**: Dependency injection, response models, middleware
+
+---
+

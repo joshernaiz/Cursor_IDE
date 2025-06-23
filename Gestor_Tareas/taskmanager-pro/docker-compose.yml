@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: taskmanager-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - taskmanager-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: taskmanager-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=mysql://taskmanager_user:taskmanager_pass@database:3306/taskmanager_db
+      - JWT_SECRET=dev-secret-key-change-in-production
+      - CORS_ORIGINS=http://localhost:3000
+    depends_on:
+      - database
+    networks:
+      - taskmanager-network
+
+  database:
+    image: mariadb:10.11
+    container_name: taskmanager-database
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=taskmanager_db
+      - MYSQL_USER=taskmanager_user
+      - MYSQL_PASSWORD=taskmanager_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/init-scripts:/docker-entrypoint-initdb.d
+      - taskmanager_data:/var/lib/mysql
+    networks:
+      - taskmanager-network
+
+volumes:
+  taskmanager_data:
+
+networks:
+  taskmanager-network:
+    driver: bridge
+
+# AI-Hint: Docker Compose principal para TaskManager Pro | Servicios: frontend React, backend FastAPI, database MariaDB | Red aislada y volúmenes persistentes | TODO: Añadir Redis para cache y nginx para reverse proxy 

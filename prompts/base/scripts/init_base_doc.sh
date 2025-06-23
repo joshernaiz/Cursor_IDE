@@ -1,11 +1,32 @@
 #!/bin/bash
 
 # Script para inicializar la estructura base de documentación .cursor
-# Uso: ./init_base_doc.sh
+# Uso: ./init_base_doc.sh [--force]
+# --force: Sobrescribe archivos existentes
 
 set -e
 
+FORCE_OVERWRITE=false
+
+# Procesar argumentos
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --force)
+            FORCE_OVERWRITE=true
+            shift
+            ;;
+        *)
+            echo "Uso: $0 [--force]"
+            echo "  --force: Sobrescribe archivos existentes"
+            exit 1
+            ;;
+    esac
+done
+
 echo "🚀 Inicializando estructura base de documentación .cursor"
+if [ "$FORCE_OVERWRITE" = true ]; then
+    echo "⚠️  Modo forzado: Se sobrescribirán archivos existentes"
+fi
 echo
 
 # Función para crear directorio si no existe
@@ -18,11 +39,14 @@ create_dir_if_not_exists() {
     fi
 }
 
-# Función para crear archivo si no existe
+# Función para crear archivo si no existe o si se fuerza
 create_file_if_not_exists() {
-    if [ ! -f "$1" ]; then
-        touch "$1"
-        echo "✅ Archivo creado: $1"
+    if [ ! -f "$1" ] || [ "$FORCE_OVERWRITE" = true ]; then
+        if [ -f "$1" ] && [ "$FORCE_OVERWRITE" = true ]; then
+            echo "🔄 Sobrescribiendo archivo: $1"
+        else
+            echo "✅ Creando archivo: $1"
+        fi
         return 0
     else
         echo "ℹ️  Archivo ya existe: $1"
@@ -80,7 +104,7 @@ echo "📥 Descargando documento base..."
 BASE_PROMPT_URL="https://raw.githubusercontent.com/joshernaiz/Cursor_IDE/refs/heads/main/prompts/base/templates/base_prompt.md"
 BASE_PROMPT_FILE="docs/base_prompt/base_prompt.md"
 
-download_file_if_not_exists "$BASE_PROMPT_URL" "$BASE_PROMPT_FILE" "plantilla base de prompt"
+download_file_if_not_exists "$BASE_PROMPT_URL" "$BASE_PROMPT_FILE" "plantilla base de prompt" || echo "⚠️  No se pudo descargar el archivo base, continuando..."
 echo
 
 # Crear archivos de reglas
@@ -806,5 +830,7 @@ echo "2. Actualizar las fechas de 'Last Updated' en cada archivo"
 echo "3. Completar los templates con información real del proyecto"
 echo "4. Ajustar las reglas según el workflow y metodología del equipo"
 echo "5. Revisar el documento base descargado en docs/base_prompt/base_prompt.md"
+echo
+echo "💡 Tip: Para sobrescribir archivos existentes, usa: ./init_base_doc.sh --force"
 echo
 echo "✨ La estructura base está lista para ser personalizada!" 

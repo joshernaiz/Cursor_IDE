@@ -1,0 +1,1 @@
+prompts/base/scripts/init_base_doc.sh

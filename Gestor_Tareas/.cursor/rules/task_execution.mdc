@@ -1,0 +1,292 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Reglas para Ejecución Estructurada de Tareas TODO
+
+## Objetivo
+Proporcionar una metodología clara para que la IA pueda ejecutar tareas específicas de los archivos TODO del proyecto de manera estructurada, documentada y trazable.
+
+# Reglas para Ejecución Estructurada de Tareas TODO
+
+## Objetivo
+Definir metodología clara y estructurada para ejecutar tareas específicas del desarrollo de TaskManager Pro, garantizando progresión sistemática y documentación consistente.
+
+## Formato de Invocación
+
+### Sintaxis de Comando
+```
+Ejecutar tarea: {{TASK}} del archivo {{FILEMD}}
+```
+
+**Ejemplos:**
+- `Ejecutar tarea: 1.1.1 del archivo docs/TODO.md`
+- `Ejecutar tarea: 2.3.2 del archivo docs/TODO.md`
+- `Ejecutar tarea: 4.1.1 del archivo docs/TODO.md`
+
+### Variables de Contexto
+- **{{TASK}}**: Identificador específico de la tarea (ej: 1.1.1, 2.3.2) que corresponde exactamente al número en el archivo TODO
+- **{{FILEMD}}**: Ruta del archivo de tareas, siempre `docs/TODO.md` para TaskManager Pro
+
+## Metodología de Ejecución
+
+### Fase 1: Análisis Inicial
+**Pasos obligatorios:**
+1. **Leer archivo TODO**: Acceder a `docs/TODO.md` y localizar la tarea específica por su identificador
+2. **Identificar tarea**: Extraer descripción completa, prerequisitos y criterios de éxito definidos
+3. **Consultar documentación**: Revisar `docs/info/index.md` para documentación relacionada existente
+4. **Analizar dependencias**: Verificar que tareas prerequisito estén marcadas como completadas (✅)
+
+### Fase 2: Planificación Estructurada
+**Pasos obligatorios:**
+1. **Dividir en subtareas**: Usar numeración jerárquica (ej: 1.1.1.a, 1.1.1.b, 1.1.1.c)
+2. **Identificar recursos**: Determinar archivos a crear/modificar, comandos necesarios, dependencias a instalar
+3. **Estimar complejidad**: Clasificar como Simple (< 1h), Moderada (1-2h), Compleja (2-4h)
+4. **Definir criterios**: Establecer métricas de validación técnica y funcional específicas
+
+### Fase 3: Ejecución Paso a Paso
+**Para cada subtarea:**
+
+#### A. Preparación
+- Verificar estructura de directorios necesaria para TaskManager Pro
+- Confirmar versiones de dependencias (React 18+, FastAPI 0.100+, MariaDB 10.11+)
+- Preparar entorno de desarrollo (Docker, venv, node_modules)
+
+#### B. Implementación
+- **Generar/Modificar código**: Seguir patrones de TaskManager Pro según `patterns.md`
+- **Añadir AI-Hints**: Comentarios especiales para contexto futuro (OBLIGATORIO)
+  ```python
+  # AI-Hint: [Propósito] | [Relaciones con TaskService/UserService/AuthService] | [Restricciones FastAPI/SQLAlchemy] | [TODOs específicos]
+  ```
+  ```typescript
+  // AI-Hint: [Propósito] | [Integraciones con API REST/Redux/React Query] | [Restricciones React/TypeScript] | [TODOs específicos]
+  ```
+- **Mantener consistencia**: Usar convenciones de nombres, estructura de archivos y patrones arquitectónicos establecidos
+
+#### C. Validación
+- Ejecutar tests unitarios con `pytest` (backend) y `vitest` (frontend)
+- Probar endpoints con herramientas como `curl`, Postman o FastAPI docs
+- Validar integración frontend-backend y flujos de datos
+- Verificar funcionamiento con Docker Compose
+
+### Fase 4: Documentación y Actualización
+**Pasos obligatorios:**
+1. **Crear/Actualizar documentación**: Generar archivo `.md` en `docs/info/` con nombre descriptivo basado en funcionalidad implementada
+2. **Actualizar índice maestro**: OBLIGATORIO actualizar `docs/info/index.md` agregando nueva entrada con descripción específica y categoría apropiada
+3. **Actualizar TODO**: Marcar subtareas como completadas (✅) en `docs/TODO.md` y añadir detalles de implementación
+4. **Registrar cambios**: Documentar archivos modificados, comandos de prueba, y referencias cruzadas
+
+## Estructura de Documentación del Proyecto
+
+### Directorio Base: `docs/`
+```
+docs/
+├── TODO.md                        # Archivo principal de tareas del proyecto
+├── info/                          # Documentación técnica generada
+│   ├── index.md                   # ÍNDICE MAESTRO (CRÍTICO)
+│   ├── arquitectura/              # Documentación de arquitectura y diseño
+│   ├── backend/                   # Documentación específica de FastAPI/Python
+│   ├── frontend/                  # Documentación específica de React/TypeScript
+│   ├── database/                  # Documentación de MariaDB y modelos
+│   ├── api/                       # Documentación de endpoints y contratos
+│   ├── testing/                   # Documentación de pruebas y validación
+│   ├── deployment/                # Documentación de Docker y despliegue
+│   ├── configuracion/             # Documentación de configuración y ambiente
+│   └── desarrollo/                # Guías de desarrollo y patrones
+└── plan/                          # Documentación de planificación (existente)
+    ├── DESIGN_PLAN.md
+    └── IMPLEMENTATION_PLAN.md
+```
+
+### Archivo Índice Maestro: `docs/info/index.md`
+
+**PROPÓSITO CRÍTICO**: 
+- **Índice completo** de toda la documentación técnica generada durante desarrollo
+- **Navegación inteligente** para la IA según tipo de consulta sobre TaskManager Pro
+- **Descripciones específicas** que permiten selección precisa de documentos
+- **Categorización funcional** para búsqueda eficiente por área tecnológica
+
+**ESTRUCTURA OBLIGATORIA DEL ÍNDICE**:
+```markdown
+# Índice de Documentación Técnica - TaskManager Pro
+
+## Resumen
+Documentación técnica completa del sistema de gestión de tareas TaskManager Pro desarrollado con React + FastAPI + MariaDB. Incluye arquitectura, implementación, configuración y guías de desarrollo.
+
+## Categorías de Documentación
+
+### 🏗️ Arquitectura y Estructura
+**Descripción**: Información sobre la arquitectura de 3 capas, componentes principales y flujos de datos del sistema
+**Usar cuando**: Se necesite entender la estructura general, relaciones entre componentes, o planificar nuevas funcionalidades
+- **arquitectura-general.md**: Visión completa de la arquitectura de 3 capas - Estado: ✅/🚧/📋
+- **componentes-core.md**: Documentación de componentes principales del sistema - Estado: ✅/🚧/📋
+- **flujos-datos.md**: Documentación de flujos de datos entre frontend y backend - Estado: ✅/🚧/📋
+
+### 📊 Backend y API
+**Descripción**: Documentación específica de FastAPI, servicios, endpoints, y lógica de negocio
+**Usar cuando**: Se implementen endpoints, servicios, o se trabaje con la lógica del servidor
+- **servicios-core.md**: DocumentaciónTaskService, UserService, AuthService - Estado: ✅/🚧/📋
+- **endpoints-api.md**: Documentación completa de endpoints REST - Estado: ✅/🚧/📋
+- **middlewares.md**: Documentación de middleware de autenticación y validación - Estado: ✅/🚧/📋
+
+### 🎨 Frontend y UI
+**Descripción**: Documentación específica de React, componentes, hooks y estado de la aplicación
+**Usar cuando**: Se desarrollen componentes React, se maneje estado, o se trabaje con la interfaz de usuario
+- **componentes-react.md**: Documentación de componentes principales React - Estado: ✅/🚧/📋
+- **hooks-personalizados.md**: Documentación de custom hooks desarrollados - Estado: ✅/🚧/📋
+- **gestion-estado.md**: Documentación de manejo de estado global y local - Estado: ✅/🚧/📋
+
+### 💾 Base de Datos y Modelos
+**Descripción**: Documentación de modelos SQLAlchemy, esquemas de base de datos y migraciones
+**Usar cuando**: Se trabajen modelos de datos, esquemas, relaciones, o migraciones de MariaDB
+- **modelos-sqlalchemy.md**: Documentación de modelos User, Task, Project, Category - Estado: ✅/🚧/📋
+- **esquemas-db.md**: Documentación del esquema completo de base de datos - Estado: ✅/🚧/📋
+- **migraciones.md**: Documentación de migraciones y cambios de esquema - Estado: ✅/🚧/📋
+
+### 🔧 Configuración y Deployment
+**Descripción**: Documentación de configuración, Docker, variables de entorno y despliegue
+**Usar cuando**: Se configure el ambiente, se trabajen contenedores, o se prepare el despliegue
+- **docker-setup.md**: Documentación de configuración Docker Compose - Estado: ✅/🚧/📋
+- **variables-entorno.md**: Documentación de configuración y variables de ambiente - Estado: ✅/🚧/📋
+- **deployment-guia.md**: Guía completa de despliegue en desarrollo y producción - Estado: ✅/🚧/📋
+
+### 🧪 Testing y Validación
+**Descripción**: Documentación de pruebas unitarias, integración y validación del sistema
+**Usar cuando**: Se implementen tests, se valide funcionalidad, o se configure CI/CD
+- **tests-unitarios.md**: Documentación de tests con pytest y vitest - Estado: ✅/🚧/📋
+- **tests-integracion.md**: Documentación de pruebas de integración completas - Estado: ✅/🚧/📋
+- **validacion-api.md**: Documentación de validación de endpoints y contratos - Estado: ✅/🚧/📋
+
+### 📋 Desarrollo y Patrones
+**Descripción**: Guías de desarrollo, patrones de código y best practices específicas del proyecto
+**Usar cuando**: Se necesiten ejemplos de patrones, convenciones de código, o guías de desarrollo
+- **patrones-react.md**: Patrones específicos para componentes React - Estado: ✅/🚧/📋
+- **patrones-fastapi.md**: Patrones específicos para desarrollo con FastAPI - Estado: ✅/🚧/📋
+- **ai-hints-ejemplos.md**: Ejemplos de AI-Hints para diferentes tipos de código - Estado: ✅/🚧/📋
+
+## Guía de Navegación para IA
+
+### Por Tipo de Consulta:
+- **Implementación de componentes React**: Consultar Frontend y UI + Desarrollo y Patrones
+- **Desarrollo de endpoints FastAPI**: Consultar Backend y API + Base de Datos y Modelos
+- **Configuración y setup**: Consultar Configuración y Deployment
+- **Debugging y errores**: Consultar Testing y Validación + categoría específica del componente
+- **Arquitectura y diseño**: Consultar Arquitectura y Estructura
+- **Patrones de código**: Consultar Desarrollo y Patrones
+
+### Estados de Documentos:
+- **✅ Completado**: Documentación validada, actualizada y revisada
+- **🚧 En progreso**: Documentación parcial, en desarrollo activo
+- **📋 Planificado**: Documentación pendiente de crear según progreso del proyecto
+
+Last Updated: 2024-12-19
+Total Documentos: 0 (estructura base creada)
+```
+
+**REGLAS DE ACTUALIZACIÓN DEL ÍNDICE**:
+1. **OBLIGATORIO** actualizar cada vez que se cree nueva documentación técnica
+2. **Descripción específica** debe incluir componentes o funcionalidades documentadas
+3. **Estado del documento** debe reflejar completitud real y última actualización
+4. **Categorización funcional** debe mantenerse consistente con la arquitectura del proyecto
+5. **Guía de navegación** debe incluir combinaciones comunes de consultas para TaskManager Pro
+
+## Estructura de Archivos TODO
+**Ubicación**: `docs/TODO.md` (archivo principal de tareas del proyecto)
+**Documentación generada**: `docs/info/` (subdirectorio para documentación técnica)
+**Índice maestro**: `docs/info/index.md` (CRÍTICO - actualizar siempre)
+
+## Reglas de Implementación
+
+### ✅ Buenas Prácticas
+- Seguir arquitectura de 3 capas establecida (frontend React, backend FastAPI, database MariaDB)
+- Usar patrones de código consistentes según `.cursor/memory/long_memory/patterns.md`
+- Implementar AI-Hints en todo código significativo (servicios, componentes principales, endpoints)
+- Validar con Docker Compose antes de marcar tareas como completadas
+- Mantener consistencia en naming conventions (camelCase TS, snake_case Python)
+
+### ❌ Restricciones
+- NO modificar estructura de directorios base sin actualizar documentación
+- NO omitir AI-Hints en componentes principales o servicios críticos
+- NO marcar tareas como completadas sin validación funcional
+
+### 🔄 Flujo de Validación
+1. **Implementar código** siguiendo patrones establecidos
+2. **Añadir AI-Hints** apropiados para el tipo de componente
+3. **Ejecutar tests** locales (pytest/vitest según corresponda)
+4. **Probar con Docker** para validar integración completa
+5. **Documentar cambios** en `docs/info/` con categorización apropiada
+6. **Actualizar índice** `docs/info/index.md` con nueva documentación
+7. **Marcar tarea completada** en `docs/TODO.md`
+
+## Casos de Uso Específicos
+
+### 💻 Implementación de Código
+- **Backend FastAPI**: Usar patterns.md para estructura de servicios y endpoints
+- **Frontend React**: Seguir patterns de componentes y custom hooks establecidos
+- **Base de datos**: Implementar modelos SQLAlchemy con validaciones Pydantic
+- **Testing**: Usar pytest para backend, vitest para frontend
+- **AI-Hints**: Formato específico según lenguaje y tipo de componente
+
+### 🧪 Pruebas y Validación
+- **Tests unitarios**: pytest con fixtures para backend, vitest con mocks para frontend
+- **Tests integración**: Docker Compose para pruebas completas end-to-end
+- **Validación API**: FastAPI docs automáticas + validación manual con curl/Postman
+- **Validación UI**: Testing manual + React Testing Library para componentes críticos
+
+### 📊 Análisis y Métricas
+- **Performance**: Métricas de carga de API y tiempo de respuesta de UI
+- **Cobertura de tests**: Reportes de cobertura con pytest-cov y vitest coverage
+- **Calidad de código**: Análisis con linters (black, prettier, eslint)
+
+### 🔧 Configuración y Setup
+- **Docker**: Configuración multi-stage para desarrollo y producción
+- **Variables de entorno**: Gestión con .env y validación en aplicación
+- **Base de datos**: Inicialización, migraciones y datos de ejemplo
+- **Dependencias**: Gestión con requirements.txt y package.json con versiones específicas
+
+## Plantilla de Respuesta
+
+### Formato de Inicio
+```
+## Ejecutando Tarea {{TASK}} - {{FILEMD}}
+
+### 📋 Análisis de Tarea
+- **Objetivo**: [Descripción específica del objetivo de la tarea]
+- **Prerequisitos**: [Lista de dependencias verificadas con ✅/❌]
+- **Criterios de éxito**: [Métricas técnicas y funcionales específicas]
+
+### 🔧 Planificación de Subtareas
+1. **{{TASK}}.a**: [Descripción subtarea específica] - [Complejidad: Simple/Moderada/Compleja]
+2. **{{TASK}}.b**: [Descripción subtarea específica] - [Complejidad: Simple/Moderada/Compleja]
+3. **{{TASK}}.c**: [Descripción subtarea específica] - [Complejidad: Simple/Moderada/Compleja]
+[...]
+
+### 🚀 Ejecución
+[Implementación paso a paso de cada subtarea con código específico]
+```
+
+### Formato de Cierre
+```
+### ✅ Resumen de Completado
+- **Subtareas ejecutadas**: [Lista con estado: ✅ Completado / 🚧 Parcial / ❌ Fallido]
+- **Archivos modificados**: [Lista específica de archivos de código creados/modificados]
+- **Documentación generada**: 
+  - **Nuevo documento**: `docs/info/[categoria]/[nombre-documento].md`
+  - **Índice actualizado**: `docs/info/index.md` - [Descripción específica de cambios realizados]
+- **Comandos de prueba**: [Comandos específicos para validar la implementación]
+
+### 📝 Próximos Pasos
+- **Tareas desbloqueadas**: [Referencias específicas a tareas TODO que ahora pueden ejecutarse]
+- **Mejoras sugeridas**: [Optimizaciones técnicas específicas para TaskManager Pro]
+- **Documentación pendiente**: [Documentación adicional requerida según funcionalidad implementada]
+
+### 🔗 Referencias de Documentación
+- **Consultar**: `docs/info/index.md` para navegación completa de documentación
+- **Documento generado**: Incluido en categoría [nombre-categoria] del índice maestro
+- **Estado**: ✅ Completado / 🚧 En progreso / 📋 Planificado
+```
+
+---
+*Última actualización: 2024-12-19*
+*Metodología: Análisis → Planificación → Ejecución → Documentación*

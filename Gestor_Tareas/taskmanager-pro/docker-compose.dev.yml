@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: taskmanager-frontend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - taskmanager-dev-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: taskmanager-backend-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=mysql://taskmanager_user:taskmanager_pass@database:3306/taskmanager_dev_db
+      - JWT_SECRET=dev-secret-key-for-development
+      - CORS_ORIGINS=http://localhost:3000
+      - PYTHONPATH=/app
+      - UVICORN_RELOAD=true
+    depends_on:
+      - database
+    networks:
+      - taskmanager-dev-network
+
+  database:
+    image: mariadb:10.11
+    container_name: taskmanager-database-dev
+    environment:
+      - MYSQL_ROOT_PASSWORD=dev_root_password
+      - MYSQL_DATABASE=taskmanager_dev_db
+      - MYSQL_USER=taskmanager_user
+      - MYSQL_PASSWORD=taskmanager_pass
+    ports:
+      - "3307:3306"  # Puerto diferente para no conflictar con instancia de producción
+    volumes:
+      - ./database/init-scripts:/docker-entrypoint-initdb.d
+      - taskmanager_dev_data:/var/lib/mysql
+    networks:
+      - taskmanager-dev-network
+
+volumes:
+  taskmanager_dev_data:
+
+networks:
+  taskmanager-dev-network:
+    driver: bridge
+
+# AI-Hint: Docker Compose para desarrollo | Hot reload habilitado | Puerto DB diferente (3307) | Variables de entorno de desarrollo | TODO: Añadir servicios de desarrollo como mailcatcher y adminer 
